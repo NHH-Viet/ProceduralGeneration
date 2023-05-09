@@ -1,0 +1,20 @@
+.header {
+    color: rgb(224, 60, 16);
+    font-size: 30px;
+}
+
+.panel-setting {
+}
+
+.unity-base-field {
+    height:200%;
+}
+
+.unity-scroll-view_content-container{
+    height:1000%;
+}
+
+.options{
+    margin: 25px 3px 25px 3px;
+}
+

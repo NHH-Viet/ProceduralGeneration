@@ -1,0 +1,180 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/GUI/baseui.uss?fileID=7433441132597879392&amp;guid=4b4f567a2613f05418367a93ec39723b&amp;type=3#baseui" />
+    <ui:VisualElement name="VisualElement" style="height: 100%; flex-direction: column; flex-shrink: 1; width: 30%;">
+        <ui:VisualElement name="NoiseSettings" class="panel-setting" style="height: 90%; width: 100%; background-color: rgba(0, 0, 0, 0.47); margin-top: 10px; margin-left: 10px; padding-left: 0; padding-right: 0; padding-top: 0; flex-grow: 1; display: flex; opacity: 1;">
+            <ui:VisualElement name="title" style="height: 5%; background-color: rgba(255, 160, 124, 0.39); padding-bottom: 0; flex-direction: column;">
+                <ui:Label text="Settings:" display-tooltip-when-elided="true" name="titleName" style="font-size: 16px; -unity-text-align: middle-center; padding-left: 0; align-items: center; justify-content: space-between; margin-bottom: 5px; padding-right: 0;" />
+            </ui:VisualElement>
+            <ui:ScrollView name="ScrollView" style="height: 986px; flex-grow: 1;">
+                <ui:VisualElement style="flex-grow: 1; height: 200%; align-items: center;">
+                    <ui:DropdownField label="Draw Mode" index="0" choices="Noise,Mesh" name="mode" style="flex-shrink: 1; flex-grow: 1; height: 100%;" />
+                </ui:VisualElement>
+                <ui:VisualElement style="flex-grow: 1; height: 100%; align-items: center; width: 100%; flex-direction: row; -unity-text-align: middle-left;">
+                    <ui:Label text="Noise Settings:" display-tooltip-when-elided="true" style="flex-shrink: 1; flex-grow: 0; align-items: center; justify-content: center; height: 100%; font-size: 14px; -unity-font-style: bold; width: 30%;" />
+                    <ui:Label text="Label" display-tooltip-when-elided="true" name="assetNoise" style="width: 30%; flex-shrink: 1; justify-content: flex-start; align-items: auto; -unity-text-align: middle-left; margin-left: 15px;" />
+                    <ui:Button text="Lưu" display-tooltip-when-elided="true" name="saveNoise" style="flex-shrink: 1;" />
+                    <ui:Button text="Tải" display-tooltip-when-elided="true" name="loadNoise" style="flex-shrink: 1;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="saveNameNoise" style="flex-grow: 1; height: 400%; flex-direction: column; align-items: center; display: none;">
+                    <ui:VisualElement name="saveNoiseHolder" style="flex-grow: 1; flex-direction: row;">
+                        <ui:TextField picking-mode="Ignore" label="Tên file" name="noiseSaveName" style="flex-shrink: 1; flex-grow: 1; height: 100%; align-items: center;" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="saveButtonNoiseHolder" style="flex-direction: row; flex-grow: 1;">
+                        <ui:Button text="Lưu" display-tooltip-when-elided="true" name="rsaveNoise" style="flex-shrink: 1; height: 50%;" />
+                        <ui:Button text="Hủy" display-tooltip-when-elided="true" name="cancelNoise" style="flex-shrink: 1; height: 50%;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="loadNameNoise" style="flex-grow: 1; height: 300%; flex-direction: column; align-items: center; display: none;">
+                    <ui:VisualElement name="loadNoiseHolder" style="flex-grow: 1; flex-direction: row; height: auto;">
+                        <ui:DropdownField label="Tên file" index="0" name="loadlistNoise" style="flex-shrink: 1; height: auto; flex-grow: 1;" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="loadButtonNoiseHolder" style="flex-direction: row; flex-grow: 1;">
+                        <ui:Button text="Tải" display-tooltip-when-elided="true" name="rloadNoise" style="flex-shrink: 1; height: 50%;" />
+                        <ui:Button text="Hủy" display-tooltip-when-elided="true" name="cancelLoadNoise" style="flex-shrink: 1; height: 50%;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:TextField picking-mode="Ignore" label="Scale" value="5" text="5" name="noiseScale" class="options" style="flex-shrink: 1; flex-grow: 1; flex-wrap: nowrap; align-items: center; height: 200%; margin-bottom: 10px; margin-top: 10px; opacity: 0.9;" />
+                <ui:TextField picking-mode="Ignore" label="Octaves" value="filler text" text="6" name="octaves" password="false" class="options" style="flex-shrink: 1; flex-grow: 1; flex-wrap: nowrap; align-items: center; height: 200%; opacity: 0.9;" />
+                <ui:Slider picking-mode="Ignore" label="persistance" value="0.5" high-value="1" show-input-field="true" direction="Horizontal" inverted="false" name="persistance" class="options" style="flex-shrink: 1; flex-grow: 1; -unity-text-align: upper-left; height: auto; padding-left: 0; padding-right: 10px; opacity: 0.9; margin-right: 0;" />
+                <ui:TextField picking-mode="Ignore" label="lacunarity" value="filler text" text="6" name="lacunarity" password="false" class="options" style="flex-shrink: 1; flex-grow: 1; flex-wrap: nowrap; align-items: center; height: 200%; opacity: 0.9;" />
+                <ui:TextField picking-mode="Ignore" label="Seed" value="filler text" text="6" name="seed" password="false" class="options" style="flex-shrink: 1; flex-grow: 1; flex-wrap: nowrap; align-items: center; height: 200%; opacity: 0.9;" />
+                <ui:TextField picking-mode="Ignore" label="Cao độ" value="filler text" text="6" name="heightMultiplier" password="false" class="options" style="flex-shrink: 1; flex-grow: 1; flex-wrap: nowrap; align-items: center; height: 200%; opacity: 0.9;" />
+                <ui:Toggle label="Use Fall Off" name="useFalloff" class="options" style="height: 100%; flex-shrink: 1; flex-grow: 1; align-items: center; opacity: 0.9;" />
+                <ui:VisualElement style="flex-grow: 1; height: 100%; align-items: center;">
+                    <ui:Label text="Mesh Settings:" display-tooltip-when-elided="true" style="flex-shrink: 1; flex-grow: 1; align-items: center; justify-content: center; height: 100%; font-size: 16px; -unity-font-style: bold;" />
+                </ui:VisualElement>
+                <ui:SliderInt picking-mode="Ignore" label="LOD" value="42" high-value="4" name="lod" style="flex-shrink: 1; flex-grow: 1; height: 100%;" />
+                <ui:SliderInt picking-mode="Ignore" label="Kích cỡ khối" value="8" high-value="8" name="chunkSize" style="flex-shrink: 1; flex-grow: 1;" />
+                <ui:Slider picking-mode="Ignore" label="Xoay" value="0" high-value="90" name="spin" inverted="false" low-value="-90" style="flex-shrink: 1; flex-grow: 1;" />
+                <ui:DropdownField label="Normalize Mode" index="0" choices="Local,Global" name="normalizeMode" class="options" style="width: 100%; height: 100%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; flex-direction: row; align-items: center; flex-shrink: 1; flex-grow: 1; display: none;" />
+                <ui:VisualElement style="flex-grow: 1; height: 100%; align-items: center; width: 100%; flex-direction: row; -unity-text-align: middle-left;">
+                    <ui:Label text="Texture Settings:" display-tooltip-when-elided="true" style="flex-shrink: 1; flex-grow: 0; align-items: center; justify-content: center; height: 100%; font-size: 14px; -unity-font-style: bold; width: 30%;" />
+                    <ui:Label text="Label" display-tooltip-when-elided="true" name="assetTexture" style="width: 30%; flex-shrink: 1; justify-content: flex-start; align-items: auto; -unity-text-align: middle-left; margin-left: 15px;" />
+                    <ui:Button text="Lưu" display-tooltip-when-elided="true" name="saveTexture" style="flex-shrink: 1;" />
+                    <ui:Button text="Tải" display-tooltip-when-elided="true" name="loadTexture" style="flex-shrink: 1;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="saveNameTexture" style="flex-grow: 1; height: 400%; flex-direction: column; align-items: center; display: flex;">
+                    <ui:VisualElement name="saveTextureHolder" style="flex-direction: row; flex-grow: 1;">
+                        <ui:TextField picking-mode="Ignore" label="Tên file" name="textureSaveName" style="flex-shrink: 1; flex-grow: 1; height: 100%; align-items: center;" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="saveButtonTextureHolder" style="flex-direction: row; flex-grow: 1;">
+                        <ui:Button text="Lưu" display-tooltip-when-elided="true" name="rsaveTexture" style="flex-shrink: 1; height: 50%;" />
+                        <ui:Button text="Hủy" display-tooltip-when-elided="true" name="cancelTexture" style="flex-shrink: 1; height: 50%;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="loadNameTexture" style="flex-grow: 1; height: 300%; flex-direction: column; align-items: center; display: flex;">
+                    <ui:VisualElement name="loadTextureHolder" style="flex-grow: 1; flex-direction: row; height: auto; display: none;">
+                        <ui:DropdownField label="Tên file" index="0" name="loadlistTexture" style="flex-shrink: 1; height: auto; flex-grow: 1;" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="loadButtonTextureHolder" style="flex-direction: row; flex-grow: 1; display: none;">
+                        <ui:Button text="Tải" display-tooltip-when-elided="true" name="rloadTexture" style="flex-shrink: 1; height: 50%;" />
+                        <ui:Button text="Hủy" display-tooltip-when-elided="true" name="cancelLoadTexture" style="flex-shrink: 1; height: 50%;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="v0" style="flex-grow: 1; height: 1000%;">
+                    <ui:Label text="Nước" display-tooltip-when-elided="true" style="flex-shrink: 1; flex-grow: 1; height: 100%; margin-top: 10px; margin-right: 0; margin-left: 3px; margin-bottom: 10px; font-size: 14px; -unity-font-style: bold; color: rgb(1, 37, 255); -unity-text-align: upper-center;" />
+                    <ui:VisualElement name="sub0" style="flex-direction: row; align-items: center; flex-grow: 1; height: 100%; margin-bottom: 5px; margin-right: 0; margin-left: 3px; margin-top: 5px;">
+                        <ui:Label text="Màu pha" display-tooltip-when-elided="true" style="flex-shrink: 1; width: 30%; height: 100%; margin-bottom: 0; margin-right: 0;" />
+                        <ui:Button display-tooltip-when-elided="true" name="color0" style="width: 65%; height: 100%; justify-content: flex-start; align-items: center; flex-shrink: 1; flex-grow: 1; background-color: rgb(236, 36, 30);" />
+                        <ui:Button text="Lưu" display-tooltip-when-elided="true" name="saveColor0" style="flex-shrink: 1; display: none;" />
+                    </ui:VisualElement>
+                    <ui:Slider picking-mode="Ignore" label="Độ pha" value="0" high-value="1" name="TintStr0" style="flex-shrink: 1; flex-grow: 1;" />
+                    <ui:Slider picking-mode="Ignore" label="Vùng tô" value="0" high-value="1" name="StartHeight0" style="flex-shrink: 1; flex-grow: 1;" />
+                    <ui:Slider picking-mode="Ignore" label="Độ hòa màu" value="0" high-value="1" name="Blend0" style="flex-shrink: 1; flex-grow: 1;" />
+                    <ui:TextField picking-mode="Ignore" label="Chất vật liệu" value="filler text" text="filler text" name="TextureStr0" max-length="6" style="flex-shrink: 1; align-items: center;" />
+                    <ui:Toggle label="Active" name="setColor0" style="flex-shrink: 1; flex-grow: 1;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="v1" style="flex-grow: 1; height: 1000%;">
+                    <ui:Label text="Cát" display-tooltip-when-elided="true" style="flex-shrink: 1; flex-grow: 1; height: 100%; margin-top: 10px; margin-right: 0; margin-left: 3px; margin-bottom: 10px; font-size: 14px; -unity-font-style: bold; color: rgb(255, 248, 156); -unity-text-align: upper-center;" />
+                    <ui:VisualElement name="sub1" style="flex-direction: row; align-items: center; flex-grow: 1; height: 100%; margin-bottom: 5px; margin-right: 0; margin-left: 3px; margin-top: 5px;">
+                        <ui:Label text="Màu pha" display-tooltip-when-elided="true" style="flex-shrink: 1; width: 30%; height: 100%; margin-bottom: 0; margin-right: 0;" />
+                        <ui:Button display-tooltip-when-elided="true" name="color1" style="width: 65%; height: 100%; justify-content: flex-start; align-items: center; flex-shrink: 1; flex-grow: 1; background-color: rgb(236, 36, 30);" />
+                        <ui:Button text="Lưu" display-tooltip-when-elided="true" name="saveColor1" style="flex-shrink: 1; display: none;" />
+                    </ui:VisualElement>
+                    <ui:Slider picking-mode="Ignore" label="Độ pha" value="0" high-value="1" name="TintStr1" style="flex-shrink: 1; flex-grow: 1;" />
+                    <ui:Slider picking-mode="Ignore" label="Vùng tô" value="0" high-value="1" name="StartHeight1" style="flex-shrink: 1; flex-grow: 1;" />
+                    <ui:Slider picking-mode="Ignore" label="Độ hòa màu" value="0" high-value="1" name="Blend1" style="flex-shrink: 1; flex-grow: 1;" />
+                    <ui:TextField picking-mode="Ignore" label="Chất vật liệu" value="filler text" text="filler text" name="TextureStr1" max-length="6" style="flex-shrink: 1; align-items: center;" />
+                    <ui:Toggle label="Active" name="setColor1" style="flex-shrink: 1; flex-grow: 1;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="v2" style="flex-grow: 1; height: 1000%;">
+                    <ui:Label text="Cỏ" display-tooltip-when-elided="true" style="flex-shrink: 1; flex-grow: 1; height: 100%; margin-top: 10px; margin-right: 0; margin-left: 3px; margin-bottom: 10px; font-size: 14px; -unity-font-style: bold; color: rgb(1, 164, 7); -unity-text-align: upper-center;" />
+                    <ui:VisualElement name="sub2" style="flex-direction: row; align-items: center; flex-grow: 1; height: 100%; margin-bottom: 5px; margin-right: 0; margin-left: 3px; margin-top: 5px;">
+                        <ui:Label text="Màu pha" display-tooltip-when-elided="true" style="flex-shrink: 1; width: 30%; height: 100%; margin-bottom: 0; margin-right: 0;" />
+                        <ui:Button display-tooltip-when-elided="true" name="color2" style="width: 65%; height: 100%; justify-content: flex-start; align-items: center; flex-shrink: 1; flex-grow: 1; background-color: rgb(236, 36, 30);" />
+                        <ui:Button text="Lưu" display-tooltip-when-elided="true" name="saveColor2" style="flex-shrink: 1; display: none;" />
+                    </ui:VisualElement>
+                    <ui:Slider picking-mode="Ignore" label="Độ pha" value="0" high-value="1" name="TintStr2" style="flex-shrink: 1; flex-grow: 1;" />
+                    <ui:Slider picking-mode="Ignore" label="Vùng tô" value="0" high-value="1" name="StartHeight2" style="flex-shrink: 1; flex-grow: 1;" />
+                    <ui:Slider picking-mode="Ignore" label="Độ hòa màu" value="0" high-value="1" name="Blend2" style="flex-shrink: 1; flex-grow: 1;" />
+                    <ui:TextField picking-mode="Ignore" label="Chất vật liệu" value="filler text" text="filler text" name="TextureStr2" max-length="6" style="flex-shrink: 1; align-items: center;" />
+                    <ui:Toggle label="Active" name="setColor2" style="flex-shrink: 1; flex-grow: 1;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="v3" style="flex-grow: 1; height: 1000%;">
+                    <ui:Label text="Đất đá" display-tooltip-when-elided="true" style="flex-shrink: 1; flex-grow: 1; height: 100%; margin-top: 10px; margin-right: 0; margin-left: 3px; margin-bottom: 10px; font-size: 14px; -unity-font-style: bold; color: rgb(120, 91, 20); -unity-text-align: upper-center;" />
+                    <ui:VisualElement name="sub3" style="flex-direction: row; align-items: center; flex-grow: 1; height: 100%; margin-bottom: 5px; margin-right: 0; margin-left: 3px; margin-top: 5px;">
+                        <ui:Label text="Màu pha" display-tooltip-when-elided="true" style="flex-shrink: 1; width: 30%; height: 100%; margin-bottom: 0; margin-right: 0;" />
+                        <ui:Button display-tooltip-when-elided="true" name="color3" style="width: 65%; height: 100%; justify-content: flex-start; align-items: center; flex-shrink: 1; flex-grow: 1; background-color: rgb(236, 36, 30);" />
+                        <ui:Button text="Lưu" display-tooltip-when-elided="true" name="saveColor3" style="flex-shrink: 1; display: none;" />
+                    </ui:VisualElement>
+                    <ui:Slider picking-mode="Ignore" label="Độ pha" value="0" high-value="1" name="TintStr3" style="flex-shrink: 1; flex-grow: 1;" />
+                    <ui:Slider picking-mode="Ignore" label="Vùng tô" value="0" high-value="1" name="StartHeight3" style="flex-shrink: 1; flex-grow: 1;" />
+                    <ui:Slider picking-mode="Ignore" label="Độ hòa màu" value="0" high-value="1" name="Blend3" style="flex-shrink: 1; flex-grow: 1;" />
+                    <ui:TextField picking-mode="Ignore" label="Chất vật liệu" value="filler text" text="filler text" name="TextureStr3" max-length="6" style="flex-shrink: 1; align-items: center;" />
+                    <ui:Toggle label="Active" name="setColor3" style="flex-shrink: 1; flex-grow: 1;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="v4" style="flex-grow: 1; height: 1000%;">
+                    <ui:Label text="Đá 1" display-tooltip-when-elided="true" name="sub4" style="flex-shrink: 1; flex-grow: 1; height: 100%; margin-top: 10px; margin-right: 0; margin-left: 3px; margin-bottom: 10px; font-size: 14px; -unity-font-style: bold; color: rgb(38, 16, 11); -unity-text-align: upper-center;" />
+                    <ui:VisualElement style="flex-direction: row; align-items: center; flex-grow: 1; height: 100%; margin-bottom: 5px; margin-right: 0; margin-left: 3px; margin-top: 5px;">
+                        <ui:Label text="Màu pha" display-tooltip-when-elided="true" style="flex-shrink: 1; width: 30%; height: 100%; margin-bottom: 0; margin-right: 0;" />
+                        <ui:Button display-tooltip-when-elided="true" name="color4" style="width: 65%; height: 100%; justify-content: flex-start; align-items: center; flex-shrink: 1; flex-grow: 1; background-color: rgb(236, 36, 30);" />
+                        <ui:Button text="Lưu" display-tooltip-when-elided="true" name="saveColor4" style="flex-shrink: 1; display: none;" />
+                    </ui:VisualElement>
+                    <ui:Slider picking-mode="Ignore" label="Độ pha" value="0" high-value="1" name="TintStr4" style="flex-shrink: 1; flex-grow: 1;" />
+                    <ui:Slider picking-mode="Ignore" label="Vùng tô" value="0" high-value="1" name="StartHeight4" style="flex-shrink: 1; flex-grow: 1;" />
+                    <ui:Slider picking-mode="Ignore" label="Độ hòa màu" value="0" high-value="1" name="Blend4" style="flex-shrink: 1; flex-grow: 1;" />
+                    <ui:TextField picking-mode="Ignore" label="Chất vật liệu" value="filler text" text="filler text" name="TextureStr4" max-length="6" style="flex-shrink: 1; align-items: center;" />
+                    <ui:Toggle label="Active" name="setColor4" style="flex-shrink: 1; flex-grow: 1;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="v5" style="flex-grow: 1; height: 1000%;">
+                    <ui:Label text="Đá 1" display-tooltip-when-elided="true" name="sub5" style="flex-shrink: 1; flex-grow: 1; height: 100%; margin-top: 10px; margin-right: 0; margin-left: 3px; margin-bottom: 10px; font-size: 14px; -unity-font-style: bold; color: rgb(38, 16, 11); -unity-text-align: upper-center;" />
+                    <ui:VisualElement style="flex-direction: row; align-items: center; flex-grow: 1; height: 100%; margin-bottom: 5px; margin-right: 0; margin-left: 3px; margin-top: 5px;">
+                        <ui:Label text="Màu pha" display-tooltip-when-elided="true" style="flex-shrink: 1; width: 30%; height: 100%; margin-bottom: 0; margin-right: 0;" />
+                        <ui:Button display-tooltip-when-elided="true" name="color5" style="width: 65%; height: 100%; justify-content: flex-start; align-items: center; flex-shrink: 1; flex-grow: 1; background-color: rgb(236, 36, 30); display: none;" />
+                        <ui:Button text="Lưu" display-tooltip-when-elided="true" name="saveColor5" style="flex-shrink: 1;" />
+                    </ui:VisualElement>
+                    <ui:Slider picking-mode="Ignore" label="Độ pha" value="0" high-value="1" name="TintStr5" style="flex-shrink: 1; flex-grow: 1;" />
+                    <ui:Slider picking-mode="Ignore" label="Vùng tô" value="0" high-value="1" name="StartHeight5" style="flex-shrink: 1; flex-grow: 1;" />
+                    <ui:Slider picking-mode="Ignore" label="Độ hòa màu" value="0" high-value="1" name="Blend5" style="flex-shrink: 1; flex-grow: 1;" />
+                    <ui:TextField picking-mode="Ignore" label="Chất vật liệu" value="filler text" text="filler text" name="TextureStr5" max-length="6" style="flex-shrink: 1; align-items: center;" />
+                    <ui:Toggle label="Active" name="setColor5" style="flex-shrink: 1; flex-grow: 1;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="v6" style="flex-grow: 1; height: 1000%;">
+                    <ui:Label text="Tuyết" display-tooltip-when-elided="true" name="sub6" style="flex-shrink: 1; flex-grow: 1; height: 100%; margin-top: 10px; margin-right: 0; margin-left: 3px; margin-bottom: 10px; font-size: 14px; -unity-font-style: bold; color: rgb(255, 255, 255); -unity-text-align: upper-center;" />
+                    <ui:VisualElement style="flex-direction: row; align-items: center; flex-grow: 1; height: 100%; margin-bottom: 5px; margin-right: 0; margin-left: 3px; margin-top: 5px;">
+                        <ui:Label text="Màu pha" display-tooltip-when-elided="true" style="flex-shrink: 1; width: 30%; height: 100%; margin-bottom: 0; margin-right: 0;" />
+                        <ui:Button display-tooltip-when-elided="true" name="color6" style="width: 65%; height: 100%; justify-content: flex-start; align-items: center; flex-shrink: 1; flex-grow: 1; background-color: rgb(236, 36, 30);" />
+                        <ui:Button text="Lưu" display-tooltip-when-elided="true" name="saveColor6" style="flex-shrink: 1; display: none;" />
+                    </ui:VisualElement>
+                    <ui:Slider picking-mode="Ignore" label="Độ pha" value="0" high-value="1" name="TintStr6" style="flex-shrink: 1; flex-grow: 1;" />
+                    <ui:Slider picking-mode="Ignore" label="Vùng tô" value="0" high-value="1" name="StartHeight6" style="flex-shrink: 1; flex-grow: 1;" />
+                    <ui:Slider picking-mode="Ignore" label="Độ hòa màu" value="0" high-value="1" name="Blend6" style="flex-shrink: 1; flex-grow: 1;" />
+                    <ui:TextField picking-mode="Ignore" label="Chất vật liệu" value="filler text" text="filler text" name="TextureStr6" max-length="6" style="flex-shrink: 1; align-items: center;" />
+                    <ui:Toggle label="Active" name="setColor6" style="flex-shrink: 1; flex-grow: 1;" />
+                </ui:VisualElement>
+            </ui:ScrollView>
+            <ui:VisualElement style="flex-direction: column; height: 100%; display: none;">
+                <ui:DropdownField label="Normalize Mode" index="0" choices="Local,Global" name="normalizeMode" style="width: 100%; height: 100%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; flex-direction: row; align-items: center; flex-shrink: 1; flex-grow: 1;" />
+                <ui:TextField picking-mode="Ignore" label="Scale" value="5" text="5" name="noiseScale" style="flex-shrink: 1; flex-grow: 1; flex-wrap: nowrap; align-items: center; height: 100%;" />
+                <ui:TextField picking-mode="Ignore" label="Octaves" value="filler text" text="6" name="octaves" password="false" style="flex-shrink: 1; flex-grow: 1; flex-wrap: nowrap; align-items: center; height: 100%;" />
+                <ui:Slider picking-mode="Ignore" label="Slider" value="0.5" high-value="1" show-input-field="true" direction="Horizontal" inverted="false" name="persistance" style="flex-shrink: 1; flex-grow: 1; -unity-text-align: upper-left; height: auto;" />
+                <ui:TextField picking-mode="Ignore" label="lacunarity" value="filler text" text="6" name="lacunarity" password="false" style="flex-shrink: 1; flex-grow: 1; flex-wrap: nowrap; align-items: center; height: 100%;" />
+                <ui:TextField picking-mode="Ignore" label="Seed" value="filler text" text="6" name="seed" password="false" style="flex-shrink: 1; flex-grow: 1; flex-wrap: nowrap; align-items: center; height: 100%;" />
+                <ui:TextField picking-mode="Ignore" label="Độ nhô" value="filler text" text="6" name="heightMultiplier" password="false" style="flex-shrink: 1; flex-grow: 1; flex-wrap: nowrap; align-items: center; height: 100%;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement style="height: 10%; margin-left: 10px; margin-top: 10px; align-items: center;">
+            <ui:Button text="Thoát" display-tooltip-when-elided="true" name="exit" start-visible="true" style="width: 25%;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

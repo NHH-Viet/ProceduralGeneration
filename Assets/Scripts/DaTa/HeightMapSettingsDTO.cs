@@ -106,7 +106,7 @@ public class NoiseSettingsDTO
     public int normallizeMode;
     public float scale;
     public int octaves;
-    public float persistance;
+    public float persistence;
     public float lacunarity;
     public int seed;
     public Vector2Data offset;
@@ -116,16 +116,15 @@ public class NoiseSettingsDTO
         scale = Mathf.Max(scale, 0.01f);
         octaves = Mathf.Max(octaves, 1);
         lacunarity = Mathf.Max(lacunarity, 1);
-        persistance = Mathf.Clamp01(persistance);
+        persistence = Mathf.Clamp01(persistence);
     }
     public NoiseSettings ToNoiseSettings()
     {
         NoiseSettings noiseSettings = new NoiseSettings
         {
-            normallizeMode = Noise.NormallizeMode.Local,
             scale = this.scale,
             octaves = this.octaves,
-            persistance = this.persistance,
+            persistence = this.persistence,
             lacunarity = this.lacunarity,
             seed = this.seed,
             offset = this.offset

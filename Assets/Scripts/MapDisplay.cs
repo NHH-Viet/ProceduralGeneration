@@ -21,6 +21,8 @@ public class MapDisplay : MonoBehaviour
 
     public Material terrainMat;
 
+    public Texture2D texturesave;
+
     //-----
     //Bien cho xu ly mesh
     //public float meshHeightMultiplier;
@@ -38,20 +40,28 @@ public class MapDisplay : MonoBehaviour
         {
             DrawMapInEditor();
         }
-        textureData.ApplytoMaterial(terrainMat);
+        //textureData.ApplytoMaterial(terrainMat);
     }
     void OnTextureValuesUpdated()
     {
-        textureData.ApplytoMaterial(terrainMat);
+        //textureData.ApplytoMaterial(terrainMat);
     }
 
     //Lua mode ve trong editor (ve noisemap, ve noisemap co mau, ve mesh)
     public void DrawMapInEditor()
     {
-        textureData.ApplytoMaterial(terrainMat);
+        //textureData.ApplytoMaterial(terrainMat);
         textureData.UpdateMeshHeight(terrainMat, heightMapSettings.minHeight, heightMapSettings.maxHeight);
-        HeightMap mapData = HeightMapGenerator.GenerateHeightMap(meshSettings.numVertsPerline, meshSettings.numVertsPerline, heightMapSettings, Vector2.zero);
-        //MapDisplay display = FindObjectOfType<MapDisplay>();
+        noiseMap = Noise.GenerateNoiseMap(meshSettings.numVertsPerline, meshSettings.numVertsPerline, heightMapSettings.noiseSettings);
+        if (heightMapSettings.useFallOff)
+        {
+            noiseMap = HeightMapGenerator.CombineFalloff(noiseMap, meshSettings.numVertsPerline);
+        }
+        HeightMap mapData = HeightMapGenerator.GenerateHeightMap(meshSettings.numVertsPerline, meshSettings.numVertsPerline, heightMapSettings);
+
+        Color[] color = new Color[meshSettings.numVertsPerline * meshSettings.numVertsPerline];
+        color = TextureGenerator.colorMapGenerator(meshSettings.numVertsPerline, noiseMap, textureData);
+        texturesave = TextureGenerator.TextureFromColourMap(color, meshSettings.numVertsPerline, meshSettings.numVertsPerline);
         // Lựa draw Mode
         if (drawMode == DrawMode.NoiseMap)
         {
@@ -63,7 +73,7 @@ public class MapDisplay : MonoBehaviour
         // }
         else if (drawMode == DrawMode.Mesh)
         {
-            DrawMesh(MeshGenerator.GenerateTerrainMesh(mapData.heightMap, meshSettings, levelOfDetail)/*, TextureGenerator.TextureFromColourMap(mapData.colourMap, mapChunkSize, mapChunkSize)*/);
+            DrawMesh(MeshGenerator.GenerateTerrainMesh(mapData.heightMap, meshSettings, levelOfDetail), texturesave);
         }
         else if (drawMode == DrawMode.FallOffMap)
         {
@@ -71,14 +81,21 @@ public class MapDisplay : MonoBehaviour
         }
     }
     //-----
-    public float[,] accessArray;
+    public float[,] noiseMap;
     public void DrawMapInRuntime(string mode)
     {
-        textureData.ApplytoMaterial(terrainMat);
+        //textureData.ApplytoMaterial(terrainMat);
         textureData.UpdateMeshHeight(terrainMat, heightMapSettings.minHeight, heightMapSettings.maxHeight);
-        HeightMap mapData = HeightMapGenerator.GenerateHeightMap(meshSettings.numVertsPerline, meshSettings.numVertsPerline, heightMapSettings, Vector2.zero);
-        accessArray = Noise.GenerateNoiseMap(meshSettings.numVertsPerline, meshSettings.numVertsPerline, heightMapSettings.noiseSettings, Vector2.zero);
-        //MapDisplay display = FindObjectOfType<MapDisplay>();
+        noiseMap = Noise.GenerateNoiseMap(meshSettings.numVertsPerline, meshSettings.numVertsPerline, heightMapSettings.noiseSettings);
+        if (heightMapSettings.useFallOff)
+        {
+            noiseMap = HeightMapGenerator.CombineFalloff(noiseMap, meshSettings.numVertsPerline);
+        }
+
+        HeightMap mapData = HeightMapGenerator.GenerateHeightMap(meshSettings.numVertsPerline, meshSettings.numVertsPerline, heightMapSettings);
+        Color[] color = new Color[meshSettings.numVertsPerline * meshSettings.numVertsPerline];
+        color = TextureGenerator.colorMapGenerator(meshSettings.numVertsPerline, noiseMap, textureData);
+        texturesave = TextureGenerator.TextureFromColourMap(color, meshSettings.numVertsPerline, meshSettings.numVertsPerline);
         // Lựa draw Mode
         if (mode == "Noise")
         {
@@ -91,13 +108,19 @@ public class MapDisplay : MonoBehaviour
         {
             textureRender.gameObject.SetActive(false);
             meshFilter.gameObject.SetActive(true);
-            DrawMesh(MeshGenerator.GenerateTerrainMesh(mapData.heightMap, meshSettings, levelOfDetail)/*, TextureGenerator.TextureFromColourMap(mapData.colourMap, mapChunkSize, mapChunkSize)*/);
+            //DrawMesh(MeshGenerator.GenerateTerrainMesh(mapData.heightMap, meshSettings, levelOfDetail));
+            DrawMesh(MeshGenerator.GenerateTerrainMesh(mapData.heightMap, meshSettings, levelOfDetail), texturesave);
+        }
+        else if (mode == "Raw Noise")
+        {
+            DrawTextureMap(TextureGenerator.TextureFromHeightMap(new HeightMap(noiseMap, 0, 1)));
         }
         else
         {
             textureRender.gameObject.SetActive(false);
             meshFilter.gameObject.SetActive(true);
-            DrawMesh(MeshGenerator.GenerateTerrainMesh(mapData.heightMap, meshSettings, levelOfDetail)/*, TextureGenerator.TextureFromColourMap(mapData.colourMap, mapChunkSize, mapChunkSize)*/);
+            //DrawMesh(MeshGenerator.GenerateTerrainMesh(mapData.heightMap, meshSettings, levelOfDetail)/*, TextureGenerator.TextureFromColourMap(mapData.colourMap, mapChunkSize, mapChunkSize)*/);
+            DrawMesh(MeshGenerator.GenerateTerrainMesh(mapData.heightMap, meshSettings, levelOfDetail), texturesave);
 
         }
     }
@@ -133,35 +156,15 @@ public class MapDisplay : MonoBehaviour
     // gán texture cho material
     public void DrawTextureMap(Texture2D texture)
     {
-        // int width = noiseMap.GetLength(0);
-        // int height = noiseMap.GetLength(1);
-
-        // Texture2D texture = new Texture2D(width, height);
-
-        // Color[] colourMap = new Color[width * height];
-        // for (int y = 0; y < height; y++)
-        // {
-        //     for (int x = 0; x < width; x++)
-        //     {
-        //         colourMap[y * width + x] = Color.Lerp(Color.black, Color.white, noiseMap[x, y]);
-        //     }
-        // }
-        // texture.SetPixels(colourMap);
-        // texture.Apply();
 
         textureRender.sharedMaterial.mainTexture = texture;
         textureRender.transform.localScale = new Vector3(texture.width, 1, texture.height);
 
-        //textureRender.gameObject.SetActive (true);
-        //meshFilter.gameObject.SetActive(false);
     }
 
-    // vẽ mesh từ meshData bên meshGenerator và gán texture cho nó
-    public void DrawMesh(MeshData meshData /*Texture2D texture*/)
+    public void DrawMesh(MeshData meshData, Texture2D texture)
     {
         meshFilter.sharedMesh = meshData.CreateMesh();
-        //meshRenderer.sharedMaterial.mainTexture = texture;
-        //AssetDatabase.CreateAsset(meshFilter.sharedMesh, "Assets/Saved/test2.asset");
-        //meshFilter.transform.localScale = Vector3.one * FindObjectOfType<MapGenerator>().meshSettings.scale;
+        meshRenderer.sharedMaterial.mainTexture = texture;
     }
 }

@@ -68,7 +68,6 @@ Shader "Custom/Terrain" {
 				else
 					continue;
 			}
-
 		}
 
 

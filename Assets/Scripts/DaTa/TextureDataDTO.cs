@@ -18,12 +18,7 @@ public class TextureDataDTO
     {
         TextureData textureData = ScriptableObject.CreateInstance<TextureData>();
         textureData.layers = layers.Select(layerDTO => layerDTO.ToLayer()).ToArray();
-
-        for (int i = 0; i < 7; i++){
-            if (textureData.layers[i].texture == null)
-                textureData.layers[i].texture = defaultTextureData.layers[i].texture;
-        }
-            return textureData;
+        return textureData;
     }
 }
 
@@ -42,10 +37,10 @@ public class LayerDTO
     {
         //texture = layer.texture;
         tint = new ColorData(layer.tint);
-        tintStr = layer.tintStr;
+        //tintStr = layer.tintStr;
         startHeight = layer.startHeight;
-        blendStr = layer.blendStr;
-        textureScale = layer.textureScale;
+        //blendStr = layer.blendStr;
+        //textureScale = layer.textureScale;
         active = layer.active;
     }
 
@@ -54,10 +49,10 @@ public class LayerDTO
         TextureData.Layer layer = new TextureData.Layer();
         //layer.texture = texture;
         layer.tint = tint.ToColor();
-        layer.tintStr = tintStr;
+        //layer.tintStr = tintStr;
         layer.startHeight = startHeight;
-        layer.blendStr = blendStr;
-        layer.textureScale = textureScale;
+        //layer.blendStr = blendStr;
+        //layer.textureScale = textureScale;
         layer.active = active;
         return layer;
     }

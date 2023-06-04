@@ -1,11 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using System;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading.Tasks;
 
 public class MenuController : MonoBehaviour
 {
@@ -15,15 +14,20 @@ public class MenuController : MonoBehaviour
     public HeightMapSettings heightMapSettings;
     public MeshSettings meshSettings;
     public TextureData textureSettings;
+    public GameObject meshGameObject;
+    public Material meshMaterial;
+
+    MeshRenderer meshRenderer;
     MapDisplay mapGen;
     Spining spin;
+
     //---
 
     //Element cho Noise
     public ScrollView _scrollviewHolder;
     public TextField _scaleInput;
     public TextField _octavesInput;
-    public Slider _persistanceInput;
+    public Slider _persistenceInput;
     public TextField _lacunarityInput;
     public TextField _seedInput;
     public TextField _heightMultiInput;
@@ -56,6 +60,16 @@ public class MenuController : MonoBehaviour
     // public GameObject noisePlane;
     // public GameObject meshPlane;
     public Button _exitButton;
+    public Button _saveMeshButton;
+    public Button _saveMeshpopupButton;
+    public Button _cancelMeshpopupButton;
+    public Button _showLogButton;
+    public TextField _meshnameInput;
+    public Label _logLabel;
+    public VisualElement _logContainer;
+    private bool _islog = false;
+    public VisualElement _mainContainer;
+    public VisualElement _mainContainer1;
 
 
     // Biến cho texture
@@ -81,39 +95,34 @@ public class MenuController : MonoBehaviour
 
     public VisualElement[] subElement = new VisualElement[7];
     public VisualElement[] childsElement = new VisualElement[7];
-    public Slider[] _sliderTintStr = new Slider[7];
+    //public Slider[] _sliderTintStr = new Slider[7];
     public Slider[] _sliderStartHeight = new Slider[7];
-    public Slider[] _sliderBlend = new Slider[7];
-    public TextField[] _textureStrInput = new TextField[7];
+    //public Slider[] _sliderBlend = new Slider[7];
+    //public TextField[] _textureStrInput = new TextField[7];
     public Toggle[] _activeToggle = new Toggle[7];
     public Button[] _colorButton = new Button[7];
     public Button[] _setColorButton = new Button[7];
     public FlexibleColorPicker _fcp;
+    public VisualElement _textureTitle;
     //---
     //Query lấy element cho các biến Texture
-    void queryTextureElement()
+    void queryTextureElement(ScrollView _scrollviewHolder)
     {
         var rootElement = mainMenuDocument.rootVisualElement;
-        _scrollviewHolder = rootElement.Q<ScrollView>("ScrollView");
+        //_scrollviewHolder = rootElement.Q<ScrollView>("ScrollView");
         for (int i = 0; i < 7; i++)
         {
-            subElement[i] = _scrollviewHolder.Q<VisualElement>("v" + i);
+            subElement[i] = rootElement.Q<VisualElement>("v" + i);
             childsElement[i] = subElement[i].Q<VisualElement>("sub" + i);
-            _sliderTintStr[i] = subElement[i].Q<Slider>("TintStr" + i);
+            //_sliderTintStr[i] = subElement[i].Q<Slider>("TintStr" + i);
             _sliderStartHeight[i] = subElement[i].Q<Slider>("StartHeight" + i);
-            _sliderBlend[i] = subElement[i].Q<Slider>("Blend" + i);
-            _textureStrInput[i] = subElement[i].Q<TextField>("TextureStr" + i);
+            //_sliderBlend[i] = subElement[i].Q<Slider>("Blend" + i);
+            //_textureStrInput[i] = subElement[i].Q<TextField>("TextureStr" + i);
             _activeToggle[i] = subElement[i].Q<Toggle>("setColor" + i);
             _colorButton[i] = subElement[i].Q<Button>("color" + i);
             _setColorButton[i] = subElement[i].Q<Button>("saveColor" + i);
 
         }
-        // if (subElement[0] == null)
-        // {
-        //     Debug.Log("Could not find child element with name: v");
-        // }
-        // else
-        //      Debug.Log("Success"+_sliderStartHeight[0].value);
     }
     //Xử lý callback các biến texture
     void RegisterSliderArrayCallbacks(Slider[] sliderArray)
@@ -125,7 +134,7 @@ public class MenuController : MonoBehaviour
             slider.RegisterValueChangedCallback(evt => OnSliderValueChanged(slider, evt, sliderArray));
         }
     }
-    void RegisterFieldArrayCallbacks(TextField[] fieldArray)
+    /*void RegisterFieldArrayCallbacks(TextField[] fieldArray)
     {
         for (int i = 0; i < fieldArray.Length; i++)
         {
@@ -133,7 +142,7 @@ public class MenuController : MonoBehaviour
 
             field.RegisterValueChangedCallback(evt => OnFieldArrayValueChanged(field, evt, fieldArray));
         }
-    }
+    }*/
 
     void RegisterToggleArrayCallbacks(Toggle[] toggleArray)
     {
@@ -170,7 +179,7 @@ public class MenuController : MonoBehaviour
                 int indexactive = int.Parse(buttonName.Replace("color", "")); // Parse the index from the button name
                 _setColorButton[indexactive].style.display = DisplayStyle.Flex;
 
-                Debug.Log("Buttton at " + index + "and indexactive: " + indexactive);
+                //Debug.Log("Buttton at " + index + "and indexactive: " + indexactive);
                 _fcp.gameObject.SetActive(true);
                 _fcp.color = textureSettings.layers[index].tint;
                 // update the active button index
@@ -181,7 +190,7 @@ public class MenuController : MonoBehaviour
                 int index = Array.IndexOf(buttonArray2, button2);
                 string buttonName = button2.name; // Get the name of the button that was clicked
                 int indexactive = int.Parse(buttonName.Replace("saveColor", "")); // Parse the index from the button name
-                Debug.Log("sub Buttton at " + index);
+                //Debug.Log("sub Buttton at " + index);
                 textureSettings.layers[index].tint = _fcp.color;
                 Color newColor = new Color(textureSettings.layers[index].tint.r, textureSettings.layers[index].tint.g, textureSettings.layers[index].tint.b, 1.0f);
                 //Debug.Log("color" + textureSettings.layers[i].tint);
@@ -189,40 +198,27 @@ public class MenuController : MonoBehaviour
                 _fcp.gameObject.SetActive(false);
                 _setColorButton[indexactive].style.display = DisplayStyle.None;
                 activeButtonIndex = -1;
+                mapGen = GameObject.FindGameObjectWithTag("MapDisplay").GetComponent<MapDisplay>();
+                mapGen.DrawMapInRuntime(getMode());
 
             };
         }
 
-        //     for (int i = 0; i < buttonArray.Length; i++)
-        //     {
-        //         Button button = buttonArray[i];
-        //         button.clickable.clicked += () =>
-        //         {
-        //             int index = Array.IndexOf(buttonArray, button);
-        //             string buttonName = button.name; // Get the name of the button that was clicked
-        //             int indexactive = int.Parse(buttonName.Replace("saveColor", "")); // Parse the index from the button name
-        //             Debug.Log("sub Buttton at " + index);
-        //             textureSettings.layers[index].tint = _fcp.color;
-        //             Color newColor = new Color(textureSettings.layers[index].tint.r, textureSettings.layers[index].tint.g, textureSettings.layers[index].tint.b, 1.0f);
-        //             //Debug.Log("color" + textureSettings.layers[i].tint);
-        //             _colorButton[index].style.backgroundColor = new StyleColor(newColor);
-        //             _fcp.gameObject.SetActive(false);
-        //             _setColorButton[indexactive].style.display = DisplayStyle.None;
-
-        //         };
-        //     }
-        // }
     }
     //---
     //Query các Element khác
     void queryElement()
     {
         var rootElement = mainMenuDocument.rootVisualElement; // lấy root
+        _mainContainer = rootElement.Q<VisualElement>("mainContainer");
+        _mainContainer1 = _mainContainer.Q<VisualElement>("Settings");
+        _scrollviewHolder = _mainContainer1.Q<ScrollView>("ScrollViewmain"); // Lấy scroll View
 
-        queryTextureElement(); // query các phần tử Texture
+        queryTextureElement(_scrollviewHolder); // query các phần tử Texture
         _saveTexture = _scrollviewHolder.Q<Button>("saveTexture");
         _loadTexture = _scrollviewHolder.Q<Button>("loadTexture");
         _assetTexture = _scrollviewHolder.Q<Label>("assetTexture");
+        _textureTitle = _scrollviewHolder.Q<VisualElement>("textureTitle");
 
         saveTextureElement = _scrollviewHolder.Q<VisualElement>("saveNameTexture");
         saveHolderTextureElement = saveTextureElement.Q<VisualElement>("saveTextureHolder");
@@ -238,11 +234,11 @@ public class MenuController : MonoBehaviour
         _cancelLoadTextureButton = loadButtonHolderTextureElement.Q<Button>("cancelLoadTexture");
         _rloadTexture = loadButtonHolderTextureElement.Q<Button>("rloadTexture");
 
-        _scrollviewHolder = rootElement.Q<ScrollView>("ScrollView"); // Lấy scroll View
+
         //Noise element
         _scaleInput = _scrollviewHolder.Q<TextField>("noiseScale");
         _octavesInput = _scrollviewHolder.Q<TextField>("octaves");
-        _persistanceInput = _scrollviewHolder.Q<Slider>("persistance");
+        _persistenceInput = _scrollviewHolder.Q<Slider>("persistance");
         _lacunarityInput = _scrollviewHolder.Q<TextField>("lacunarity");
         _seedInput = _scrollviewHolder.Q<TextField>("seed");
         _heightMultiInput = _scrollviewHolder.Q<TextField>("heightMultiplier");
@@ -274,6 +270,38 @@ public class MenuController : MonoBehaviour
         _spinInput = _scrollviewHolder.Q<Slider>("spin");
         _drawMode = _scrollviewHolder.Q<DropdownField>("mode");
         _exitButton = rootElement.Q<Button>("exit");
+        _saveMeshButton = rootElement.Q<Button>("saveMesh");
+        _saveMeshpopupButton = rootElement.Q<Button>("saveMeshpopup");
+        _cancelMeshpopupButton = rootElement.Q<Button>("cancelMeshpopup");
+        _showLogButton = rootElement.Q<Button>("showlog");
+        _meshnameInput = rootElement.Q<TextField>("meshName");
+        _logLabel = rootElement.Q<Label>("log");
+        _logContainer = rootElement.Q<VisualElement>("logContainer");
+
+    }
+    //Hiển thị các thông số cần
+    void showSettings()
+    {
+        if (_drawMode.value == "Noise" || _drawMode.value == "Raw Noise")
+        {
+            for (int i = 0; i < 7; i++)
+            {
+                subElement[i].style.display = DisplayStyle.None;
+            }
+            _spinInput.style.display = DisplayStyle.None;
+            _lodInput.style.display = DisplayStyle.None;
+            _textureTitle.style.display = DisplayStyle.None;
+        }
+        if (_drawMode.value == "Mesh")
+        {
+            for (int i = 0; i < 7; i++)
+            {
+                subElement[i].style.display = DisplayStyle.Flex;
+            }
+            _spinInput.style.display = DisplayStyle.Flex;
+            _lodInput.style.display = DisplayStyle.Flex;
+            _textureTitle.style.display = DisplayStyle.Flex;
+        }
     }
     //Khi hoạt động
     void OnEnable()
@@ -282,7 +310,7 @@ public class MenuController : MonoBehaviour
 
         _scaleInput.RegisterValueChangedCallback(OnValuesChange);
         _octavesInput.RegisterValueChangedCallback(OnValuesChange);
-        _persistanceInput.RegisterValueChangedCallback(OnFloatValuesChange);
+        _persistenceInput.RegisterValueChangedCallback(OnFloatValuesChange);
         _lacunarityInput.RegisterValueChangedCallback(OnValuesChange);
         _seedInput.RegisterValueChangedCallback(OnValuesChange);
         _heightMultiInput.RegisterValueChangedCallback(OnValuesChange);
@@ -300,13 +328,13 @@ public class MenuController : MonoBehaviour
         _useFallOff.RegisterValueChangedCallback(OnToggleValuesChange);
         _spinInput.RegisterValueChangedCallback(OnFloatValuesChange);
 
-        RegisterSliderArrayCallbacks(_sliderTintStr);
+        //RegisterSliderArrayCallbacks(_sliderTintStr);
 
         RegisterSliderArrayCallbacks(_sliderStartHeight);
 
-        RegisterSliderArrayCallbacks(_sliderBlend);
+        //RegisterSliderArrayCallbacks(_sliderBlend);
 
-        RegisterFieldArrayCallbacks(_textureStrInput);
+        //RegisterFieldArrayCallbacks(_textureStrInput);
 
         RegisterToggleArrayCallbacks(_activeToggle);
 
@@ -322,6 +350,34 @@ public class MenuController : MonoBehaviour
 
         _drawMode.RegisterValueChangedCallback(OnValuesChange);
         _exitButton.clickable.clicked += OnButtonClicked;
+        _saveMeshpopupButton.clickable.clicked += OnMeshPopup;
+        _cancelMeshpopupButton.clickable.clicked += OnCancelPopup;
+        _saveMeshButton.clickable.clicked += OnMeshSave;
+        _showLogButton.clickable.clicked += OnShowlog;
+    }
+    private void OnDisable()
+    {
+        _saveNoise.clickable.clicked -= OnNoiseSaveButton;
+        _cancelNoiseButton.clickable.clicked -= OnNoiseCancelButton;
+        _rsaveNoise.clickable.clicked -= OnNoiseRSaveButton;
+
+        _loadNoise.clickable.clicked -= OnNoiseLoadButton;
+        _cancelLoadNoiseButton.clickable.clicked -= OnNoiseLoadCancelButton;
+        _rloadNoise.clickable.clicked -= OnNoiseRLoadButton;
+
+        _saveTexture.clickable.clicked -= OnTextureSaveButton;
+        _cancelTextureButton.clickable.clicked -= OnTextureCancelButton;
+        _rsaveTexture.clickable.clicked -= OnTextureRSaveButton;
+
+        _loadTexture.clickable.clicked -= OnTextureLoadButton;
+        _cancelLoadTextureButton.clickable.clicked -= OnTextureLoadCancelButton;
+        _rloadTexture.clickable.clicked -= OnTextureRLoadButton;
+
+        _exitButton.clickable.clicked -= OnButtonClicked;
+        _saveMeshpopupButton.clickable.clicked -= OnMeshPopup;
+        _cancelMeshpopupButton.clickable.clicked -= OnCancelPopup;
+        _saveMeshButton.clickable.clicked -= OnMeshSave;
+        _showLogButton.clickable.clicked -= OnShowlog;
     }
     //---
     //Xử lý sự kiện Button
@@ -335,6 +391,137 @@ public class MenuController : MonoBehaviour
         Application.Quit();
 #endif
     }
+    void OnMeshPopup()
+    {
+        _saveMeshButton.style.display = DisplayStyle.Flex;
+        _cancelMeshpopupButton.style.display = DisplayStyle.Flex;
+        _meshnameInput.style.display = DisplayStyle.Flex;
+    }
+    void OnCancelPopup()
+    {
+        _saveMeshButton.style.display = DisplayStyle.None;
+        _cancelMeshpopupButton.style.display = DisplayStyle.None;
+        _meshnameInput.style.display = DisplayStyle.None;
+    }
+    void OnShowlog()
+    {
+        _islog = !_islog;
+        _logContainer.style.display = _islog ? DisplayStyle.Flex : DisplayStyle.None;
+    }
+    async void OnMeshSave()
+    {
+        try
+        {
+            MeshFilter targetMeshFilter = meshGameObject.GetComponent<MeshFilter>();
+            string text = _meshnameInput.text;
+            if (string.IsNullOrEmpty(text))
+            {
+                // Generate a random three-character string
+                text = GenerateRandomString(3);
+            }
+            else
+            {
+                // Remove spaces and special characters
+                text = RemoveSpacesAndSpecialCharacters(text);
+            }
+
+            if (targetMeshFilter != null && targetMeshFilter.sharedMesh != null)
+            {
+                Mesh mesh = targetMeshFilter.sharedMesh;
+                string filePath = Path.Combine(Application.persistentDataPath, text + "mesh.obj"); // Define the file path for the exported mesh
+                //string objData = MeshToObj(mesh, text);
+                mapGen = GameObject.FindGameObjectWithTag("MapDisplay").GetComponent<MapDisplay>();
+                string objData = ObjExporter.MeshToObj(mesh);
+                await WriteTextToFileAsync(filePath, objData);
+                // Export material color
+                // Encode the Texture2D as a PNG file
+                byte[] pngBytes = mapGen.texturesave.EncodeToPNG();
+                string filepngPath = Path.Combine(Application.persistentDataPath, text + "texture.png");
+                // Save the PNG file to disk
+                //System.IO.File.WriteAllBytes(filepngPath, pngBytes);
+                await WriteBytesToFileAsync(filepngPath, pngBytes);
+                /*using (StreamWriter writer = new StreamWriter(filePath))
+                {
+                    writer.Write(objData);
+                }*/
+
+                Debug.Log("Mesh exported successfully to: " + filePath);
+                _logLabel.text = _logLabel.text + "\n Xuất thành công tới:\n" + filePath;
+                _saveMeshButton.style.display = DisplayStyle.None;
+                _cancelMeshpopupButton.style.display = DisplayStyle.None;
+                _meshnameInput.style.display = DisplayStyle.None;
+            }
+            else
+            {
+                Debug.LogError("Failed to export mesh. Mesh filter or shared mesh is null.");
+                _logLabel.text = _logLabel.text + "\n Lỗi Null";
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("Error exporting mesh: " + ex.Message);
+            _logLabel.text = _logLabel.text + "\n Lỗi:\n" + ex.Message;
+        }
+    }
+    // Async file writing method for text
+    private static async Task WriteTextToFileAsync(string filePath, string text)
+    {
+        using (StreamWriter writer = new StreamWriter(filePath))
+        {
+            await writer.WriteAsync(text);
+        }
+    }
+
+    // Async file writing method for bytes
+    private static async Task WriteBytesToFileAsync(string filePath, byte[] bytes)
+    {
+        using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 4096, useAsync: true))
+        {
+            await fileStream.WriteAsync(bytes, 0, bytes.Length);
+        }
+    }
+    /*private string MeshToObj(Mesh mesh, string text)
+    {
+        // Convert the mesh to OBJ format as a string
+        // Implement the conversion logic here or use an existing library
+        // Example: Generating a simple cube
+        string objData = "g ExportedMesh\n";
+
+        for (int i = 0; i < mesh.vertices.Length; i++)
+        {
+            objData += "v " + mesh.vertices[i].x + " " + mesh.vertices[i].y + " " + mesh.vertices[i].z + "\n";
+            objData += "vn " + mesh.normals[i].x + " " + mesh.normals[i].y + " " + mesh.normals[i].z + "\n";
+            objData += "vt " + mesh.uv[i].x + " " + mesh.uv[i].y + "\n";
+        }
+
+        int[] triangles = mesh.triangles;
+        for (int i = 0; i < triangles.Length; i += 3)
+        {
+            int vertexIndex1 = triangles[i] + 1;
+            int vertexIndex2 = triangles[i + 1] + 1;
+            int vertexIndex3 = triangles[i + 2] + 1;
+
+            objData += "f " + vertexIndex1 + "/" + vertexIndex1 + "/" + vertexIndex1 + " "
+                              + vertexIndex2 + "/" + vertexIndex2 + "/" + vertexIndex2 + " "
+                              + vertexIndex3 + "/" + vertexIndex3 + "/" + vertexIndex3 + "\n";
+        }
+        // Export material color
+        // Create a new Texture2D with the same dimensions as the RenderTexture
+        mapGen = GameObject.FindGameObjectWithTag("MapDisplay").GetComponent<MapDisplay>();
+
+
+
+
+        // Encode the Texture2D as a PNG file
+        byte[] pngBytes = mapGen.texturesave.EncodeToPNG();
+        string filepngPath = Path.Combine(Application.persistentDataPath, text + "texture.png");
+        // Save the PNG file to disk
+        System.IO.File.WriteAllBytes(filepngPath, pngBytes);
+        //System.IO.File.WriteAllBytes("E:/DO AN/texture/image3.png", pngBytes);
+
+
+        return objData;
+    }*/
     void OnNoiseSaveButton()
     {
         saveNoiseElement.style.display = DisplayStyle.Flex;
@@ -361,10 +548,10 @@ public class MenuController : MonoBehaviour
 
         // Serialize NoiseSettings
         NoiseSettingsDTO noiseSettingsDTO = new NoiseSettingsDTO();
-        noiseSettingsDTO.normallizeMode = (int)heightMapSettings.noiseSettings.normallizeMode;
+        //noiseSettingsDTO.normallizeMode = (int)heightMapSettings.noiseSettings.normallizeMode;
         noiseSettingsDTO.scale = heightMapSettings.noiseSettings.scale;
         noiseSettingsDTO.octaves = heightMapSettings.noiseSettings.octaves;
-        noiseSettingsDTO.persistance = heightMapSettings.noiseSettings.persistance;
+        noiseSettingsDTO.persistence = heightMapSettings.noiseSettings.persistence;
         noiseSettingsDTO.lacunarity = heightMapSettings.noiseSettings.lacunarity;
         noiseSettingsDTO.seed = heightMapSettings.noiseSettings.seed;
         noiseSettingsDTO.offset = heightMapSettings.noiseSettings.offset;
@@ -400,12 +587,14 @@ public class MenuController : MonoBehaviour
             }
 
             Debug.Log("Asset saved successfully at path: " + filePath);
+            _logLabel.text = _logLabel.text + "\n Lưu thành công tại đường dẫn:\n" + filePath;
             PopulateDropdown("noise", _loadNoiseNameInput);
             saveNoiseElement.style.display = DisplayStyle.None;
         }
         catch (IOException e)
         {
             Debug.LogError("Failed to save asset: " + e.Message);
+            _logLabel.text = _logLabel.text + "\n Lỗi:\n" + e.Message;
         }
     }
     void OnNoiseLoadButton()
@@ -452,25 +641,29 @@ public class MenuController : MonoBehaviour
                     mapGen.DrawMapInRuntime(getMode());
 
                     Debug.Log("Asset loaded successfully from path: " + filePath);
+                    _logLabel.text = _logLabel.text + "\n Lưu thành công tới đường dẫn:\n" + filePath;
+                    loadNoiseElement.style.display = DisplayStyle.None;
                 }
             }
             catch (IOException e)
             {
                 Debug.LogError("Failed to load asset: " + e.Message + filePath);
+                _logLabel.text = _logLabel.text + "\n Lỗi:\n" + e.Message;
             }
         }
         else
         {
-            Debug.LogWarning("No saved asset found at path: " + filePath);
+            Debug.LogWarning("No saved asset found at path:\n" + filePath);
+            _logLabel.text = _logLabel.text + "\n Lỗi không kiếm được:" + filePath;
         }
     }
     private NoiseSettings ReadNoiseSettings(BinaryReader reader)
     {
         NoiseSettings noiseSettings = new NoiseSettings();
-        noiseSettings.normallizeMode = Noise.NormallizeMode.Local;
+        //noiseSettings.normallizeMode = Noise.NormallizeMode.Local;
         noiseSettings.scale = reader.ReadSingle();
         noiseSettings.octaves = reader.ReadInt32();
-        noiseSettings.persistance = reader.ReadSingle();
+        noiseSettings.persistence = reader.ReadSingle();
         noiseSettings.lacunarity = reader.ReadSingle();
         noiseSettings.seed = reader.ReadInt32();
         noiseSettings.offset = new Vector2(reader.ReadSingle(), reader.ReadSingle());
@@ -524,8 +717,9 @@ public class MenuController : MonoBehaviour
 
         // Save the modified asset as a binary file
         string filePath = Application.persistentDataPath + "/" + text + "texture" + ".dat";
-        TextureDataSerializer.SaveTextureData(textureSettings, filePath);
+        TextureDataSerializer.SaveTextureData(textureSettings, filePath, _logLabel);
         PopulateDropdown("texture", _loadTextureNameInput);
+        saveTextureElement.style.display = DisplayStyle.None;
     }
     void OnTextureLoadButton()
     {
@@ -540,7 +734,7 @@ public class MenuController : MonoBehaviour
     {
         string name = _loadTextureNameInput.value;
         string filePath = Application.persistentDataPath + "/" + name + ".dat";
-        TextureData loadedTextureData = TextureDataSerializer.LoadTextureData(filePath,textureSettings);
+        TextureData loadedTextureData = TextureDataSerializer.LoadTextureData(filePath, textureSettings, _logLabel);
         if (loadedTextureData != null)
         {
 
@@ -583,32 +777,33 @@ public class MenuController : MonoBehaviour
     {
         int index = Array.IndexOf(targetArray, slider);
 
-        if (evt.target == _sliderTintStr[index])
+        /*if (evt.target == _sliderTintStr[index])
         {
             textureSettings.layers[index].tintStr = slider.value;
         }
+        if (evt.target == _sliderBlend[index])
+        {
+            //textureSettings.layers[index].blendStr = slider.value;
+        }*/
         if (evt.target == _sliderStartHeight[index])
         {
             textureSettings.layers[index].startHeight = slider.value;
         }
-        if (evt.target == _sliderBlend[index])
-        {
-            textureSettings.layers[index].blendStr = slider.value;
-        }
+
         mapGen = GameObject.FindGameObjectWithTag("MapDisplay").GetComponent<MapDisplay>();
         mapGen.DrawMapInRuntime(getMode());
     }
-    void OnFieldArrayValueChanged(TextField field, ChangeEvent<string> evt, TextField[] targetArray)
+    /*void OnFieldArrayValueChanged(TextField field, ChangeEvent<string> evt, TextField[] targetArray)
     {
         int index = Array.IndexOf(targetArray, field);
 
         if (evt.target == _textureStrInput[index])
         {
-            textureSettings.layers[index].textureScale = float.Parse(field.value);
+            //textureSettings.layers[index].textureScale = float.Parse(field.value);
         }
         mapGen = GameObject.FindGameObjectWithTag("MapDisplay").GetComponent<MapDisplay>();
         mapGen.DrawMapInRuntime(getMode());
-    }
+    }*/
     void OnArrayToggleValueChanged(Toggle field, ChangeEvent<bool> evt, Toggle[] targetArray)
     {
         int index = Array.IndexOf(targetArray, field);
@@ -633,27 +828,50 @@ public class MenuController : MonoBehaviour
     {
         if (evt.target == _scaleInput)
         {
-            heightMapSettings.noiseSettings.scale = float.Parse(_scaleInput.value);
+            bool success = float.TryParse(_scaleInput.value, out heightMapSettings.noiseSettings.scale);
+            //heightMapSettings.noiseSettings.scale = float.Parse(_scaleInput.value);
+            if (!success)
+                heightMapSettings.noiseSettings.scale = 1;
         }
         if (evt.target == _octavesInput)
         {
-            heightMapSettings.noiseSettings.octaves = int.Parse(_octavesInput.value);
+            bool success = int.TryParse(_octavesInput.value, out heightMapSettings.noiseSettings.octaves);
+            //heightMapSettings.noiseSettings.octaves = int.Parse(_octavesInput.value);
+            if (!success)
+            {
+                heightMapSettings.noiseSettings.octaves = 1;
+            }
+            else if (heightMapSettings.noiseSettings.octaves > 20)
+            {
+                heightMapSettings.noiseSettings.octaves = 20;
+                _octavesInput.value = heightMapSettings.noiseSettings.octaves.ToString();
+            }
+
         }
         if (evt.target == _lacunarityInput)
         {
-            heightMapSettings.noiseSettings.lacunarity = float.Parse(_lacunarityInput.value);
+            bool success = float.TryParse(_lacunarityInput.value, out heightMapSettings.noiseSettings.lacunarity);
+            //heightMapSettings.noiseSettings.lacunarity = float.Parse(_lacunarityInput.value);
+            if (!success)
+                heightMapSettings.noiseSettings.lacunarity = 1;
         }
         if (evt.target == _seedInput)
         {
+            bool success = int.TryParse(_seedInput.value, out heightMapSettings.noiseSettings.seed);
             heightMapSettings.noiseSettings.seed = int.Parse(_seedInput.value);
+            if (!success)
+                heightMapSettings.noiseSettings.seed = 1;
         }
         if (evt.target == _heightMultiInput)
         {
+            bool success = float.TryParse(_heightMultiInput.value, out heightMapSettings.HeightMultiplier);
             heightMapSettings.HeightMultiplier = float.Parse(_heightMultiInput.value);
+            if (!success)
+                heightMapSettings.noiseSettings.seed = 1;
         }
         if (evt.target == _drawMode)
         {
-
+            showSettings();
         }
         mapGen = GameObject.FindGameObjectWithTag("MapDisplay").GetComponent<MapDisplay>();
         mapGen.DrawMapInRuntime(getMode());
@@ -663,15 +881,15 @@ public class MenuController : MonoBehaviour
     public string getMode()
     {
         var rootElement = mainMenuDocument.rootVisualElement;
-        _drawMode = _scrollviewHolder.Q<DropdownField>("mode");
+        _drawMode = rootElement.Q<DropdownField>("mode");
         return _drawMode.value;
     }
 
     void OnFloatValuesChange(ChangeEvent<float> evt)
     {
-        if (evt.target == _persistanceInput)
+        if (evt.target == _persistenceInput)
         {
-            heightMapSettings.noiseSettings.persistance = _persistanceInput.value;
+            heightMapSettings.noiseSettings.persistence = _persistenceInput.value;
         }
         if (evt.target == _spinInput)
         {
@@ -711,14 +929,14 @@ public class MenuController : MonoBehaviour
     {
         for (int i = 0; i < textureSettings.layers.Length; i++)
         {
-            _sliderTintStr[i].value = textureSettings.layers[i].tintStr;
+            //_sliderTintStr[i].value = textureSettings.layers[i].tintStr;
             _sliderStartHeight[i].value = textureSettings.layers[i].startHeight;
-            _sliderBlend[i].value = textureSettings.layers[i].blendStr;
-            _textureStrInput[i].value = textureSettings.layers[i].textureScale.ToString();
+            //_sliderBlend[i].value = textureSettings.layers[i].blendStr;
+            //_textureStrInput[i].value = textureSettings.layers[i].textureScale.ToString();
             if (textureSettings.layers[i].active == 1)
                 _activeToggle[i].value = true;
             else
-                _activeToggle[i].value = true;
+                _activeToggle[i].value = false;
             Color newColor = new Color(textureSettings.layers[i].tint.r, textureSettings.layers[i].tint.g, textureSettings.layers[i].tint.b, 1.0f);
             //Debug.Log("color" + textureSettings.layers[i].tint);
             _colorButton[i].style.backgroundColor = new StyleColor(newColor);
@@ -735,7 +953,11 @@ public class MenuController : MonoBehaviour
 
         dropdown.choices = fileNames.ToList();
     }
-    // Start is called before the first frame update
+    //valid gia tri
+    void Validate()
+    {
+
+    }
     //Khởi tạo giá trị ban đầu
     void generatedValue()
     {
@@ -745,18 +967,20 @@ public class MenuController : MonoBehaviour
         int maxLOD = (int)rangeAttribute.max;
         //Debug.Log(maxLOD);
         queryElement();
-
+        
 
         PopulateDropdown("noise", _loadNoiseNameInput);
         PopulateDropdown("texture", _loadTextureNameInput);
         _scaleInput.value = heightMapSettings.noiseSettings.scale.ToString();
         _octavesInput.value = heightMapSettings.noiseSettings.octaves.ToString();
-        _persistanceInput.value = heightMapSettings.noiseSettings.persistance;
+        _persistenceInput.value = heightMapSettings.noiseSettings.persistence;
         _lacunarityInput.value = heightMapSettings.noiseSettings.lacunarity.ToString();
         _seedInput.value = heightMapSettings.noiseSettings.seed.ToString();
         _heightMultiInput.value = heightMapSettings.HeightMultiplier.ToString();
         _lodInput.value = mapGen.levelOfDetail;
         _useFallOff.value = heightMapSettings.useFallOff;
+        _chunkSizeInput.value = meshSettings.chunkSizeIndex;
+        _meshnameInput.value = "";
 
 
         SliderArraysStart();
@@ -764,6 +988,7 @@ public class MenuController : MonoBehaviour
     void Start()
     {
         generatedValue();
+        showSettings();
         mapGen.DrawMapInRuntime(getMode());
     }
 

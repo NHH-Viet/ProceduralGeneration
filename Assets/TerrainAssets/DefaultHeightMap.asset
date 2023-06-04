@@ -14,13 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   autoUpdate: 1
   noiseSettings:
-    normallizeMode: 0
-    scale: 55
-    octaves: 6
-    persistance: 0.504
+    scale: 40
+    octaves: 2
+    persistence: 0.5
     lacunarity: 2
-    seed: 55
-    offset: {x: -3.92, y: 11.05}
+    seed: 200
+    offset: {x: 0, y: 0}
   useFallOff: 0
   HeightMultiplier: 200
   HeightCurve:

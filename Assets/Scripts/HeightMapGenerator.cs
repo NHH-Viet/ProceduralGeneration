@@ -1,35 +1,33 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public static class HeightMapGenerator
 {
-    
-	
-    public static HeightMap GenerateHeightMap(int width, int height, HeightMapSettings setting, Vector2 sampleCentre)
+    public static float[,] CombineFalloff(float [,] noisemap, int size)
     {
-        AnimationCurve heightCure_thread = new AnimationCurve(setting.HeightCurve.keys);
-        float[,] values = Noise.GenerateNoiseMap(width, height, setting.noiseSettings, sampleCentre);
-        float minValue = float.MaxValue;
-        float maxValue = float.MinValue;
-        float[,] falloffMap;
-        if (setting.useFallOff)
-        {
+        float[,] falloffMap = FalloffGenerator.GenerateFalloffMap(size);
 
-            falloffMap = FalloffGenerator.GenerateFalloffMap(width);
-
-            for (int y = 0; y < width; y++)
+            for (int y = 0; y < size; y++)
             {
-                for (int x = 0; x < width; x++)
-                {
-                    if (setting.useFallOff)
-                    {
-                        values[x, y] = Mathf.Clamp01(values[x, y] - falloffMap[x, y]);
-                    }
-
+                for (int x = 0; x < size; x++)
+                {   
+                    noisemap[x, y] = Mathf.Clamp01(noisemap[x, y] - falloffMap[x, y]);
                 }
             }
-
+            return noisemap;
+    }
+    public static HeightMap GenerateHeightMap(int width, int height, HeightMapSettings setting)
+    {
+        AnimationCurve heightCure_thread = new AnimationCurve(setting.HeightCurve.keys);
+        float[,] values = Noise.GenerateNoiseMap(width, height, setting.noiseSettings);
+        float minValue = float.MaxValue;
+        float maxValue = float.MinValue;
+        if (setting.useFallOff)
+        {
+            values = CombineFalloff(values,width);
+        }
+        if(setting.HeightMultiplier == 0)
+        {
+           setting.HeightMultiplier = 1; 
         }
 
         for (int i = 0; i < width; i++)

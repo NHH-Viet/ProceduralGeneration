@@ -14,52 +14,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   autoUpdate: 1
   layers:
-  - texture: {fileID: 2800000, guid: 582e5444fd252344f998b1f98b60246e, type: 3}
-    tint: {r: 0.1124351, g: 0.15398055, b: 0.88941246, a: 0}
-    tintStr: 0.551
-    startHeight: 0
-    blendStr: 1
-    textureScale: 2222
+  - tint: {r: 0.27659085, g: 0.26420653, b: 0.8018813, a: 0}
+    startHeight: 0.2
     active: 1
-  - texture: {fileID: 2800000, guid: 53c88fcdd2f49154dbe8f540b4e53dc5, type: 3}
-    tint: {r: 0.9056604, g: 0.88470244, b: 0.5758633, a: 0}
-    tintStr: 0.774
-    startHeight: 0.15
-    blendStr: 0.078
-    textureScale: 45.07
+  - tint: {r: 0.9056604, g: 0.88470244, b: 0.5758633, a: 0}
+    startHeight: 0.35
     active: 1
-  - texture: {fileID: 2800000, guid: 62edf2fbdcaa8fe408442ae67dfa4fba, type: 3}
-    tint: {r: 0.0024207425, g: 0.6415094, b: 0.02745098, a: 0}
-    tintStr: 1
-    startHeight: 0.259
-    blendStr: 0.115
-    textureScale: 34.5
+  - tint: {r: 0.0024207425, g: 0.6415094, b: 0.02745098, a: 0}
+    startHeight: 0.5
     active: 1
-  - texture: {fileID: 2800000, guid: cb850ac1e98ff504b9b4930cf786f96c, type: 3}
-    tint: {r: 0.4716981, g: 0.35808608, b: 0.078431375, a: 0}
-    tintStr: 1
-    startHeight: 0.484
-    blendStr: 0.216
-    textureScale: 113.65
+  - tint: {r: 0.4716981, g: 0.35808608, b: 0.078431375, a: 0}
+    startHeight: 0.65
     active: 1
-  - texture: {fileID: 2800000, guid: 349cdb8aec291244695134ae055a7af0, type: 3}
-    tint: {r: 0.14901961, g: 0.0627451, b: 0.043137256, a: 0}
-    tintStr: 0.58
-    startHeight: 0.699
-    blendStr: 0.312
-    textureScale: 96.99
-    active: 1
-  - texture: {fileID: 2800000, guid: af2356497f459ea45ac9b362e01c61fc, type: 3}
-    tint: {r: 0.2735849, g: 0.12671806, b: 0.0707191, a: 0}
-    tintStr: 0.66
+  - tint: {r: 0.14901961, g: 0.0627451, b: 0.043137256, a: 0}
     startHeight: 0.8
-    blendStr: 0.12
-    textureScale: 100
     active: 1
-  - texture: {fileID: 2800000, guid: 6f38de37ee4fe664d894f5b9eef0d8dd, type: 3}
-    tint: {r: 1, g: 1, b: 1, a: 0}
-    tintStr: 1
+  - tint: {r: 0.34509805, g: 0.3372549, b: 0.32941177, a: 0}
+    startHeight: 0.9
+    active: 1
+  - tint: {r: 1, g: 1, b: 1, a: 0}
     startHeight: 1
-    blendStr: 0.15
-    textureScale: 1000
     active: 1

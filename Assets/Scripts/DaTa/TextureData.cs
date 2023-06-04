@@ -16,7 +16,7 @@ public class TextureData : UpdateData
 
     float savedMinHeight;
     float savedMaxHeight;
-    public void ApplytoMaterial(Material material)
+    /*public void ApplytoMaterial(Material material)
     {
 
         // gán cho các biến bên script bên shader
@@ -31,7 +31,7 @@ public class TextureData : UpdateData
         material.SetTexture("baseTexture", textureArray);
 
         UpdateMeshHeight(material, savedMinHeight, savedMaxHeight);
-    }
+    }*/
     //Lưu lại height tránh bị trôi
     public void UpdateMeshHeight(Material material, float minHeight, float maxHeight)
     {
@@ -47,12 +47,12 @@ public class TextureData : UpdateData
         for (int i = 0; i < layers.Length; i++)
         {
             layers[i] = new Layer();
-            layers[i].texture = other.layers[i].texture;
+            //layers[i].texture = other.layers[i].texture;
             layers[i].tint = other.layers[i].tint;
-            layers[i].tintStr = other.layers[i].tintStr;
+            //layers[i].tintStr = other.layers[i].tintStr;
             layers[i].startHeight = other.layers[i].startHeight;
-            layers[i].blendStr = other.layers[i].blendStr;
-            layers[i].textureScale = other.layers[i].textureScale;
+            //layers[i].blendStr = other.layers[i].blendStr;
+            //layers[i].textureScale = other.layers[i].textureScale;
             layers[i].active = other.layers[i].active;
         }
         savedMinHeight = other.savedMinHeight;
@@ -74,15 +74,15 @@ public class TextureData : UpdateData
     [System.Serializable]
     public class Layer
     {
-        public Texture2D texture;
+        //public Texture2D texture;
         public Color tint;
-        [Range(0, 1)]
-        public float tintStr;
+        //[Range(0, 1)]
+        //public float tintStr;
         [Range(0, 1)]
         public float startHeight;
-        [Range(0, 1)]
-        public float blendStr;
-        public float textureScale;
+        //[Range(0, 1)]
+        //public float blendStr;
+        //public float textureScale;
 
         public float active;
 

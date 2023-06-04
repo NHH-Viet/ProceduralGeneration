@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System;
+
 [CreateAssetMenu()]
 public class HeightMapSettings : UpdateData
 {
@@ -38,14 +36,5 @@ public class HeightMapSettings : UpdateData
         HeightMultiplier = other.HeightMultiplier;
         HeightCurve = new AnimationCurve(other.HeightCurve.keys); // Create a new instance of AnimationCurve with the keys from the other instance
     }
-#if UNITY_EDITOR
-    protected override void OnValidate()
-    {
-        noiseSettings.ValidateValues();
-
-        base.OnValidate();
-    }
-#endif
-
 
 }

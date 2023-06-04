@@ -7,14 +7,15 @@
 }
 
 .unity-base-field {
-    height:200%;
+    height: 200%;
 }
 
-.unity-scroll-view_content-container{
-    height:1000%;
+.unity-scroll-view_content-container {
+    height: 1000%;
 }
 
-.options{
+.options {
     margin: 25px 3px 25px 3px;
+    font-size: 14px;
+    -unity-font-style: bold;
 }
-

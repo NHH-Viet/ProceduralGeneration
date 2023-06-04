@@ -3,38 +3,63 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using UnityEngine.UIElements;
 
 public static class TextureDataSerializer
 {
-    public static void SaveTextureData(TextureData textureData, string filePath)
+    public static void SaveTextureData(TextureData textureData, string filePath, Label label)
     {
-        TextureDataDTO textureDataDTO = new TextureDataDTO(textureData);
-        BinaryFormatter formatter = new BinaryFormatter();
-        using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
+        try
         {
-            formatter.Serialize(fileStream, textureDataDTO);
-        }
+            TextureDataDTO textureDataDTO = new TextureDataDTO(textureData);
+            BinaryFormatter formatter = new BinaryFormatter();
+            using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                formatter.Serialize(fileStream, textureDataDTO);
+            }
 
-        Debug.Log("TextureData saved successfully at path: " + filePath);
+            Debug.Log("TextureData saved successfully at path: " + filePath);
+            label.text = label.text + "\nDữ liệu lưu thành công tại: " + filePath;
+        }
+        catch (IOException ex)
+        {
+            Debug.LogError("Error saving TextureData: " + ex.Message);
+
+            label.text = label.text + "\nSave failed: " + ex.Message;
+
+        }
     }
 
-    public static TextureData LoadTextureData(string filePath, TextureData defaultTexture)
+    public static TextureData LoadTextureData(string filePath, TextureData defaultTexture, Label label)
     {
-        if (File.Exists(filePath))
+        try
         {
-            BinaryFormatter formatter = new BinaryFormatter();
-            using (FileStream fileStream = new FileStream(filePath, FileMode.Open))
+            if (File.Exists(filePath))
             {
-                TextureDataDTO textureDataDTO = (TextureDataDTO)formatter.Deserialize(fileStream);
-                TextureData textureData = textureDataDTO.ToTextureData(defaultTexture);
+                BinaryFormatter formatter = new BinaryFormatter();
+                using (FileStream fileStream = new FileStream(filePath, FileMode.Open))
+                {
+                    TextureDataDTO textureDataDTO = (TextureDataDTO)formatter.Deserialize(fileStream);
+                    TextureData textureData = textureDataDTO.ToTextureData(defaultTexture);
 
-                Debug.Log("TextureData loaded successfully from path: " + filePath);
-                return textureData;
+                    Debug.Log("TextureData loaded successfully from path:" + filePath);
+                    label.text = label.text + "\nDữ liệu tải thành công tại:\n" + filePath;
+                    return textureData;
+                }
+            }
+            else
+            {
+                Debug.LogWarning("No saved TextureData found at path: " + filePath);
+                label.text = label.text + "\nKhông tìm thấy dữ liệu tại:\n" + filePath;
+                return null;
             }
         }
-        else
+        catch (IOException ex)
         {
-            Debug.LogWarning("No saved TextureData found at path: " + filePath);
+            Debug.LogError("Error loading TextureData: " + ex.Message);
+
+            label.text = label.text + "\nLoad failed:\n" + ex.Message;
+
             return null;
         }
     }

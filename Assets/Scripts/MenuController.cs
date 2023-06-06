@@ -5,10 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
+using System.Threading;
+using System.Collections;
 
 public class MenuController : MonoBehaviour
 {
-    //Biến cái class
     [SerializeField]
     UIDocument mainMenuDocument;
     public HeightMapSettings heightMapSettings;
@@ -70,6 +71,7 @@ public class MenuController : MonoBehaviour
     private bool _islog = false;
     public VisualElement _mainContainer;
     public VisualElement _mainContainer1;
+    public ProgressBar _saveProgress;
 
 
     // Biến cho texture
@@ -105,25 +107,7 @@ public class MenuController : MonoBehaviour
     public FlexibleColorPicker _fcp;
     public VisualElement _textureTitle;
     //---
-    //Query lấy element cho các biến Texture
-    void queryTextureElement(ScrollView _scrollviewHolder)
-    {
-        var rootElement = mainMenuDocument.rootVisualElement;
-        //_scrollviewHolder = rootElement.Q<ScrollView>("ScrollView");
-        for (int i = 0; i < 7; i++)
-        {
-            subElement[i] = rootElement.Q<VisualElement>("v" + i);
-            childsElement[i] = subElement[i].Q<VisualElement>("sub" + i);
-            //_sliderTintStr[i] = subElement[i].Q<Slider>("TintStr" + i);
-            _sliderStartHeight[i] = subElement[i].Q<Slider>("StartHeight" + i);
-            //_sliderBlend[i] = subElement[i].Q<Slider>("Blend" + i);
-            //_textureStrInput[i] = subElement[i].Q<TextField>("TextureStr" + i);
-            _activeToggle[i] = subElement[i].Q<Toggle>("setColor" + i);
-            _colorButton[i] = subElement[i].Q<Button>("color" + i);
-            _setColorButton[i] = subElement[i].Q<Button>("saveColor" + i);
 
-        }
-    }
     //Xử lý callback các biến texture
     void RegisterSliderArrayCallbacks(Slider[] sliderArray)
     {
@@ -206,180 +190,7 @@ public class MenuController : MonoBehaviour
 
     }
     //---
-    //Query các Element khác
-    void queryElement()
-    {
-        var rootElement = mainMenuDocument.rootVisualElement; // lấy root
-        _mainContainer = rootElement.Q<VisualElement>("mainContainer");
-        _mainContainer1 = _mainContainer.Q<VisualElement>("Settings");
-        _scrollviewHolder = _mainContainer1.Q<ScrollView>("ScrollViewmain"); // Lấy scroll View
 
-        queryTextureElement(_scrollviewHolder); // query các phần tử Texture
-        _saveTexture = _scrollviewHolder.Q<Button>("saveTexture");
-        _loadTexture = _scrollviewHolder.Q<Button>("loadTexture");
-        _assetTexture = _scrollviewHolder.Q<Label>("assetTexture");
-        _textureTitle = _scrollviewHolder.Q<VisualElement>("textureTitle");
-
-        saveTextureElement = _scrollviewHolder.Q<VisualElement>("saveNameTexture");
-        saveHolderTextureElement = saveTextureElement.Q<VisualElement>("saveTextureHolder");
-        _saveTextureNameInput = saveHolderTextureElement.Q<TextField>("textureSaveName");
-        saveButtonHolderTextureElement = saveTextureElement.Q<VisualElement>("saveButtonTextureHolder");
-        _cancelTextureButton = saveButtonHolderTextureElement.Q<Button>("cancelTexture");
-        _rsaveTexture = saveButtonHolderTextureElement.Q<Button>("rsaveTexture");
-
-        loadTextureElement = _scrollviewHolder.Q<VisualElement>("loadNameTexture");
-        loadHolderTextureElement = loadTextureElement.Q<VisualElement>("loadTextureHolder");
-        _loadTextureNameInput = loadHolderTextureElement.Q<DropdownField>("loadlistTexture");
-        loadButtonHolderTextureElement = loadTextureElement.Q<VisualElement>("loadButtonTextureHolder");
-        _cancelLoadTextureButton = loadButtonHolderTextureElement.Q<Button>("cancelLoadTexture");
-        _rloadTexture = loadButtonHolderTextureElement.Q<Button>("rloadTexture");
-
-
-        //Noise element
-        _scaleInput = _scrollviewHolder.Q<TextField>("noiseScale");
-        _octavesInput = _scrollviewHolder.Q<TextField>("octaves");
-        _persistenceInput = _scrollviewHolder.Q<Slider>("persistance");
-        _lacunarityInput = _scrollviewHolder.Q<TextField>("lacunarity");
-        _seedInput = _scrollviewHolder.Q<TextField>("seed");
-        _heightMultiInput = _scrollviewHolder.Q<TextField>("heightMultiplier");
-        _useFallOff = _scrollviewHolder.Q<Toggle>("useFalloff");
-
-        _saveNoise = _scrollviewHolder.Q<Button>("saveNoise");
-        _loadNoise = _scrollviewHolder.Q<Button>("loadNoise");
-        _assetNoise = _scrollviewHolder.Q<Label>("assetNoise");
-
-        saveNoiseElement = _scrollviewHolder.Q<VisualElement>("saveNameNoise");
-        saveHolderNoiseElement = saveNoiseElement.Q<VisualElement>("saveNoiseHolder");
-        _saveNoiseNameInput = saveHolderNoiseElement.Q<TextField>("noiseSaveName");
-        saveButtonHolderNoiseElement = saveNoiseElement.Q<VisualElement>("saveButtonNoiseHolder");
-        _cancelNoiseButton = saveButtonHolderNoiseElement.Q<Button>("cancelNoise");
-        _rsaveNoise = saveButtonHolderNoiseElement.Q<Button>("rsaveNoise");
-
-        loadNoiseElement = _scrollviewHolder.Q<VisualElement>("loadNameNoise");
-        loadHolderNoiseElement = loadNoiseElement.Q<VisualElement>("loadNoiseHolder");
-        _loadNoiseNameInput = loadHolderNoiseElement.Q<DropdownField>("loadlistNoise");
-        loadButtonHolderNoiseElement = loadNoiseElement.Q<VisualElement>("loadButtonNoiseHolder");
-        _cancelLoadNoiseButton = loadButtonHolderNoiseElement.Q<Button>("cancelLoadNoise");
-        _rloadNoise = loadButtonHolderNoiseElement.Q<Button>("rloadNoise");
-
-        //Mesh Element
-        _lodInput = _scrollviewHolder.Q<SliderInt>("lod");
-        _chunkSizeInput = _scrollviewHolder.Q<SliderInt>("chunkSize");
-
-        //Hệ thống
-        _spinInput = _scrollviewHolder.Q<Slider>("spin");
-        _drawMode = _scrollviewHolder.Q<DropdownField>("mode");
-        _exitButton = rootElement.Q<Button>("exit");
-        _saveMeshButton = rootElement.Q<Button>("saveMesh");
-        _saveMeshpopupButton = rootElement.Q<Button>("saveMeshpopup");
-        _cancelMeshpopupButton = rootElement.Q<Button>("cancelMeshpopup");
-        _showLogButton = rootElement.Q<Button>("showlog");
-        _meshnameInput = rootElement.Q<TextField>("meshName");
-        _logLabel = rootElement.Q<Label>("log");
-        _logContainer = rootElement.Q<VisualElement>("logContainer");
-
-    }
-    //Hiển thị các thông số cần
-    void showSettings()
-    {
-        if (_drawMode.value == "Noise" || _drawMode.value == "Raw Noise")
-        {
-            for (int i = 0; i < 7; i++)
-            {
-                subElement[i].style.display = DisplayStyle.None;
-            }
-            _spinInput.style.display = DisplayStyle.None;
-            _lodInput.style.display = DisplayStyle.None;
-            _textureTitle.style.display = DisplayStyle.None;
-        }
-        if (_drawMode.value == "Mesh")
-        {
-            for (int i = 0; i < 7; i++)
-            {
-                subElement[i].style.display = DisplayStyle.Flex;
-            }
-            _spinInput.style.display = DisplayStyle.Flex;
-            _lodInput.style.display = DisplayStyle.Flex;
-            _textureTitle.style.display = DisplayStyle.Flex;
-        }
-    }
-    //Khi hoạt động
-    void OnEnable()
-    {
-        queryElement();
-
-        _scaleInput.RegisterValueChangedCallback(OnValuesChange);
-        _octavesInput.RegisterValueChangedCallback(OnValuesChange);
-        _persistenceInput.RegisterValueChangedCallback(OnFloatValuesChange);
-        _lacunarityInput.RegisterValueChangedCallback(OnValuesChange);
-        _seedInput.RegisterValueChangedCallback(OnValuesChange);
-        _heightMultiInput.RegisterValueChangedCallback(OnValuesChange);
-
-        _saveNoise.clickable.clicked += OnNoiseSaveButton;
-        _cancelNoiseButton.clickable.clicked += OnNoiseCancelButton;
-        _rsaveNoise.clickable.clicked += OnNoiseRSaveButton;
-
-        _loadNoise.clickable.clicked += OnNoiseLoadButton;
-        _cancelLoadNoiseButton.clickable.clicked += OnNoiseLoadCancelButton;
-        _rloadNoise.clickable.clicked += OnNoiseRLoadButton;
-
-        _lodInput.RegisterValueChangedCallback(OnIntValuesChange);
-        _chunkSizeInput.RegisterValueChangedCallback(OnIntValuesChange);
-        _useFallOff.RegisterValueChangedCallback(OnToggleValuesChange);
-        _spinInput.RegisterValueChangedCallback(OnFloatValuesChange);
-
-        //RegisterSliderArrayCallbacks(_sliderTintStr);
-
-        RegisterSliderArrayCallbacks(_sliderStartHeight);
-
-        //RegisterSliderArrayCallbacks(_sliderBlend);
-
-        //RegisterFieldArrayCallbacks(_textureStrInput);
-
-        RegisterToggleArrayCallbacks(_activeToggle);
-
-        RegisterButtonArrayCallbacks(_colorButton, _setColorButton);
-
-        _saveTexture.clickable.clicked += OnTextureSaveButton;
-        _cancelTextureButton.clickable.clicked += OnTextureCancelButton;
-        _rsaveTexture.clickable.clicked += OnTextureRSaveButton;
-
-        _loadTexture.clickable.clicked += OnTextureLoadButton;
-        _cancelLoadTextureButton.clickable.clicked += OnTextureLoadCancelButton;
-        _rloadTexture.clickable.clicked += OnTextureRLoadButton;
-
-        _drawMode.RegisterValueChangedCallback(OnValuesChange);
-        _exitButton.clickable.clicked += OnButtonClicked;
-        _saveMeshpopupButton.clickable.clicked += OnMeshPopup;
-        _cancelMeshpopupButton.clickable.clicked += OnCancelPopup;
-        _saveMeshButton.clickable.clicked += OnMeshSave;
-        _showLogButton.clickable.clicked += OnShowlog;
-    }
-    private void OnDisable()
-    {
-        _saveNoise.clickable.clicked -= OnNoiseSaveButton;
-        _cancelNoiseButton.clickable.clicked -= OnNoiseCancelButton;
-        _rsaveNoise.clickable.clicked -= OnNoiseRSaveButton;
-
-        _loadNoise.clickable.clicked -= OnNoiseLoadButton;
-        _cancelLoadNoiseButton.clickable.clicked -= OnNoiseLoadCancelButton;
-        _rloadNoise.clickable.clicked -= OnNoiseRLoadButton;
-
-        _saveTexture.clickable.clicked -= OnTextureSaveButton;
-        _cancelTextureButton.clickable.clicked -= OnTextureCancelButton;
-        _rsaveTexture.clickable.clicked -= OnTextureRSaveButton;
-
-        _loadTexture.clickable.clicked -= OnTextureLoadButton;
-        _cancelLoadTextureButton.clickable.clicked -= OnTextureLoadCancelButton;
-        _rloadTexture.clickable.clicked -= OnTextureRLoadButton;
-
-        _exitButton.clickable.clicked -= OnButtonClicked;
-        _saveMeshpopupButton.clickable.clicked -= OnMeshPopup;
-        _cancelMeshpopupButton.clickable.clicked -= OnCancelPopup;
-        _saveMeshButton.clickable.clicked -= OnMeshSave;
-        _showLogButton.clickable.clicked -= OnShowlog;
-    }
-    //---
     //Xử lý sự kiện Button
     void OnButtonClicked()
     {
@@ -399,6 +210,7 @@ public class MenuController : MonoBehaviour
     }
     void OnCancelPopup()
     {
+        OnCancelExport();
         _saveMeshButton.style.display = DisplayStyle.None;
         _cancelMeshpopupButton.style.display = DisplayStyle.None;
         _meshnameInput.style.display = DisplayStyle.None;
@@ -408,10 +220,22 @@ public class MenuController : MonoBehaviour
         _islog = !_islog;
         _logContainer.style.display = _islog ? DisplayStyle.Flex : DisplayStyle.None;
     }
+    private CancellationTokenSource cancellationTokenSource;
+    void OnCancelExport()
+    {
+        // Cancel the mesh export if it is running
+        if (cancellationTokenSource != null)
+        {
+            cancellationTokenSource.Cancel();
+        }
+    }
     async void OnMeshSave()
     {
         try
         {
+            _saveMeshButton.SetEnabled(false);
+            //_cancelMeshpopupButton.SetEnabled(false);
+
             MeshFilter targetMeshFilter = meshGameObject.GetComponent<MeshFilter>();
             string text = _meshnameInput.text;
             if (string.IsNullOrEmpty(text))
@@ -429,27 +253,73 @@ public class MenuController : MonoBehaviour
             {
                 Mesh mesh = targetMeshFilter.sharedMesh;
                 string filePath = Path.Combine(Application.persistentDataPath, text + "mesh.obj"); // Define the file path for the exported mesh
-                //string objData = MeshToObj(mesh, text);
                 mapGen = GameObject.FindGameObjectWithTag("MapDisplay").GetComponent<MapDisplay>();
-                string objData = ObjExporter.MeshToObj(mesh);
-                await WriteTextToFileAsync(filePath, objData);
-                // Export material color
-                // Encode the Texture2D as a PNG file
-                byte[] pngBytes = mapGen.texturesave.EncodeToPNG();
-                string filepngPath = Path.Combine(Application.persistentDataPath, text + "texture.png");
-                // Save the PNG file to disk
-                //System.IO.File.WriteAllBytes(filepngPath, pngBytes);
-                await WriteBytesToFileAsync(filepngPath, pngBytes);
-                /*using (StreamWriter writer = new StreamWriter(filePath))
-                {
-                    writer.Write(objData);
-                }*/
 
-                Debug.Log("Mesh exported successfully to: " + filePath);
-                _logLabel.text = _logLabel.text + "\n Xuất thành công tới:\n" + filePath;
-                _saveMeshButton.style.display = DisplayStyle.None;
-                _cancelMeshpopupButton.style.display = DisplayStyle.None;
-                _meshnameInput.style.display = DisplayStyle.None;
+                // Create a copy of the texture to be exported
+                Texture2D originalTexture = mapGen.texturesave;
+                Texture2D exportedTexture = new Texture2D(originalTexture.width, originalTexture.height);
+                exportedTexture.SetPixels(originalTexture.GetPixels());
+                exportedTexture.Apply();
+                //string objData = ObjExporter.MeshToObj(mesh);
+                //await ObjExporter.SaveMeshAsync(mesh, filePath);
+                cancellationTokenSource = new CancellationTokenSource();
+                CancellationToken cancellationToken = cancellationTokenSource.Token;
+                Task exportTask = ExportMeshAsync(mesh, filePath, cancellationToken);
+                while (!exportTask.IsCompleted)
+                {
+                    // Allow the UI to remain responsive
+                    await Task.Yield();
+                }
+
+                // Check if the task completed successfully or was cancelled
+                if (exportTask.IsCanceled)
+                {
+                    Debug.Log("Mesh export was cancelled.");
+                    _saveMeshButton.style.display = DisplayStyle.None;
+                    _saveMeshButton.SetEnabled(true);
+                    //_cancelMeshpopupButton.SetEnabled(true);
+                    _cancelMeshpopupButton.style.display = DisplayStyle.None;
+                    _meshnameInput.style.display = DisplayStyle.None;
+                    _logLabel.text = _logLabel.text + "\n Đã hủy lưu";
+                    // Handle cancellation appropriately (e.g., update UI, show message)
+                }
+                else if (exportTask.IsFaulted)
+                {
+                    // Handle any errors that occurred during export
+                    Debug.LogError("Error exporting mesh: " + exportTask.Exception);
+                    _logLabel.text = _logLabel.text + "\n Lỗi:\n" + exportTask.Exception.Message;
+                }
+                else
+                {
+                    // Export material color
+                    // Encode the Texture2D as a PNG file
+                    byte[] pngBytes = exportedTexture.EncodeToPNG();
+                    string filepngPath = Path.Combine(Application.persistentDataPath, text + "texture.png");
+                    await WriteBytesToFileAsync(filepngPath, pngBytes);
+
+                    Debug.Log("Mesh exported successfully to: " + filePath);
+                    _logLabel.text = _logLabel.text + "\n Xuất thành công tới:\n" + Application.persistentDataPath + "/" + text + "mesh.obj";
+                    _saveMeshButton.style.display = DisplayStyle.None;
+                    _saveMeshButton.SetEnabled(true);
+                    //_cancelMeshpopupButton.SetEnabled(true);
+                    _cancelMeshpopupButton.style.display = DisplayStyle.None;
+                    _meshnameInput.style.display = DisplayStyle.None;
+                }
+                // // Export material color
+                // // Encode the Texture2D as a PNG file
+                // byte[] pngBytes = exportedTexture.EncodeToPNG();
+                // string filepngPath = Path.Combine(Application.persistentDataPath, text + "texture.png");
+
+                // await WriteBytesToFileAsync(filepngPath, pngBytes);
+
+
+                // Debug.Log("Mesh exported successfully to: " + filePath);
+                // _logLabel.text = _logLabel.text + "\n Xuất thành công tới:\n" + Application.persistentDataPath + "/" + text + "mesh.obj";
+                // _saveMeshButton.style.display = DisplayStyle.None;
+                // _saveMeshButton.SetEnabled(true);
+                // _cancelMeshpopupButton.SetEnabled(true);
+                // _cancelMeshpopupButton.style.display = DisplayStyle.None;
+                // _meshnameInput.style.display = DisplayStyle.None;
             }
             else
             {
@@ -471,6 +341,41 @@ public class MenuController : MonoBehaviour
             await writer.WriteAsync(text);
         }
     }
+    private async Task ExportMeshAsync(Mesh mesh, string filePath, CancellationToken cancellationToken)
+    {
+        ObjExporter.OnProgress += ExportProgressHandler; // Subscribe to the progress event
+        _saveProgress.style.display = DisplayStyle.Flex;
+
+        try
+        {
+            await ObjExporter.SaveMeshAsync(mesh, filePath, cancellationToken); // Start the export process
+        }
+        finally
+        {
+            ObjExporter.OnProgress -= ExportProgressHandler; // Unsubscribe from the progress event
+            _saveProgress.style.display = DisplayStyle.None;
+            _saveProgress.value = 0f;
+        }
+
+    }
+    private float lastProgressUpdate = 0f;
+    private const float ProgressUpdateInterval = 0.05f;
+    private void ExportProgressHandler(float progress)
+    {
+        // Update your user interface with the progress value (e.g., progress bar)
+        float scaleProgress = progress * 100f;
+        string formattedValue = scaleProgress.ToString("F2");
+        if (progress - lastProgressUpdate >= ProgressUpdateInterval)
+        {
+            lastProgressUpdate = progress;
+
+            // Update your UI elements with the progress value here
+            // This could be updating a progress bar, text display, or any other UI element
+            _saveProgress.value = (float)Math.Round(progress * 100, 2);
+        }
+
+    }
+
 
     // Async file writing method for bytes
     private static async Task WriteBytesToFileAsync(string filePath, byte[] bytes)
@@ -480,48 +385,6 @@ public class MenuController : MonoBehaviour
             await fileStream.WriteAsync(bytes, 0, bytes.Length);
         }
     }
-    /*private string MeshToObj(Mesh mesh, string text)
-    {
-        // Convert the mesh to OBJ format as a string
-        // Implement the conversion logic here or use an existing library
-        // Example: Generating a simple cube
-        string objData = "g ExportedMesh\n";
-
-        for (int i = 0; i < mesh.vertices.Length; i++)
-        {
-            objData += "v " + mesh.vertices[i].x + " " + mesh.vertices[i].y + " " + mesh.vertices[i].z + "\n";
-            objData += "vn " + mesh.normals[i].x + " " + mesh.normals[i].y + " " + mesh.normals[i].z + "\n";
-            objData += "vt " + mesh.uv[i].x + " " + mesh.uv[i].y + "\n";
-        }
-
-        int[] triangles = mesh.triangles;
-        for (int i = 0; i < triangles.Length; i += 3)
-        {
-            int vertexIndex1 = triangles[i] + 1;
-            int vertexIndex2 = triangles[i + 1] + 1;
-            int vertexIndex3 = triangles[i + 2] + 1;
-
-            objData += "f " + vertexIndex1 + "/" + vertexIndex1 + "/" + vertexIndex1 + " "
-                              + vertexIndex2 + "/" + vertexIndex2 + "/" + vertexIndex2 + " "
-                              + vertexIndex3 + "/" + vertexIndex3 + "/" + vertexIndex3 + "\n";
-        }
-        // Export material color
-        // Create a new Texture2D with the same dimensions as the RenderTexture
-        mapGen = GameObject.FindGameObjectWithTag("MapDisplay").GetComponent<MapDisplay>();
-
-
-
-
-        // Encode the Texture2D as a PNG file
-        byte[] pngBytes = mapGen.texturesave.EncodeToPNG();
-        string filepngPath = Path.Combine(Application.persistentDataPath, text + "texture.png");
-        // Save the PNG file to disk
-        System.IO.File.WriteAllBytes(filepngPath, pngBytes);
-        //System.IO.File.WriteAllBytes("E:/DO AN/texture/image3.png", pngBytes);
-
-
-        return objData;
-    }*/
     void OnNoiseSaveButton()
     {
         saveNoiseElement.style.display = DisplayStyle.Flex;
@@ -657,6 +520,7 @@ public class MenuController : MonoBehaviour
             _logLabel.text = _logLabel.text + "\n Lỗi không kiếm được:" + filePath;
         }
     }
+    /*
     private NoiseSettings ReadNoiseSettings(BinaryReader reader)
     {
         NoiseSettings noiseSettings = new NoiseSettings();
@@ -690,7 +554,8 @@ public class MenuController : MonoBehaviour
 
         return curve;
     }
-    //
+    */
+
     void OnTextureSaveButton()
     {
         saveTextureElement.style.display = DisplayStyle.Flex;
@@ -749,29 +614,8 @@ public class MenuController : MonoBehaviour
             loadTextureElement.style.display = DisplayStyle.None;
         }
     }
+    //----
 
-    //chuan hoa text
-    private string RemoveSpacesAndSpecialCharacters(string input)
-    {
-        // Remove spaces and special characters using regular expressions
-        string processedText = System.Text.RegularExpressions.Regex.Replace(input, "[^a-zA-Z0-9]", "");
-        return processedText;
-    }
-
-    private string GenerateRandomString(int length)
-    {
-        const string characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        string randomString = "";
-
-        for (int i = 0; i < length; i++)
-        {
-            int randomIndex = UnityEngine.Random.Range(0, characters.Length);
-            randomString += characters[randomIndex];
-        }
-
-        return randomString;
-    }
-    //---
     //Xử lý sự kiện cho texture
     void OnSliderValueChanged(Slider slider, ChangeEvent<float> evt, Slider[] targetArray)
     {
@@ -823,6 +667,7 @@ public class MenuController : MonoBehaviour
         mapGen.DrawMapInRuntime(getMode());
     }
     //----
+
     //Xử lý sự kiện cho các element bình thường
     void OnValuesChange(ChangeEvent<string> evt)
     {
@@ -924,6 +769,7 @@ public class MenuController : MonoBehaviour
         //Debug.Log("changed");
     }
     //---
+
     //Khởi tạo giá trị cho các Element Texture
     void SliderArraysStart()
     {
@@ -943,6 +789,99 @@ public class MenuController : MonoBehaviour
 
         }
     }
+    //Query lấy element cho các biến Texture
+    void queryTextureElement(ScrollView _scrollviewHolder)
+    {
+        var rootElement = mainMenuDocument.rootVisualElement;
+        //_scrollviewHolder = rootElement.Q<ScrollView>("ScrollView");
+        for (int i = 0; i < 7; i++)
+        {
+            subElement[i] = rootElement.Q<VisualElement>("v" + i);
+            childsElement[i] = subElement[i].Q<VisualElement>("sub" + i);
+            //_sliderTintStr[i] = subElement[i].Q<Slider>("TintStr" + i);
+            _sliderStartHeight[i] = subElement[i].Q<Slider>("StartHeight" + i);
+            //_sliderBlend[i] = subElement[i].Q<Slider>("Blend" + i);
+            //_textureStrInput[i] = subElement[i].Q<TextField>("TextureStr" + i);
+            _activeToggle[i] = subElement[i].Q<Toggle>("setColor" + i);
+            _colorButton[i] = subElement[i].Q<Button>("color" + i);
+            _setColorButton[i] = subElement[i].Q<Button>("saveColor" + i);
+
+        }
+    }
+    //Query các Element khác
+    void queryElement()
+    {
+        var rootElement = mainMenuDocument.rootVisualElement; // lấy root
+        _mainContainer = rootElement.Q<VisualElement>("mainContainer");
+        _mainContainer1 = _mainContainer.Q<VisualElement>("Settings");
+        _scrollviewHolder = _mainContainer1.Q<ScrollView>("ScrollViewmain"); // Lấy scroll View
+
+        queryTextureElement(_scrollviewHolder); // query các phần tử Texture
+        _saveTexture = _scrollviewHolder.Q<Button>("saveTexture");
+        _loadTexture = _scrollviewHolder.Q<Button>("loadTexture");
+        _assetTexture = _scrollviewHolder.Q<Label>("assetTexture");
+        _textureTitle = _scrollviewHolder.Q<VisualElement>("textureTitle");
+
+        saveTextureElement = _scrollviewHolder.Q<VisualElement>("saveNameTexture");
+        saveHolderTextureElement = saveTextureElement.Q<VisualElement>("saveTextureHolder");
+        _saveTextureNameInput = saveHolderTextureElement.Q<TextField>("textureSaveName");
+        saveButtonHolderTextureElement = saveTextureElement.Q<VisualElement>("saveButtonTextureHolder");
+        _cancelTextureButton = saveButtonHolderTextureElement.Q<Button>("cancelTexture");
+        _rsaveTexture = saveButtonHolderTextureElement.Q<Button>("rsaveTexture");
+
+        loadTextureElement = _scrollviewHolder.Q<VisualElement>("loadNameTexture");
+        loadHolderTextureElement = loadTextureElement.Q<VisualElement>("loadTextureHolder");
+        _loadTextureNameInput = loadHolderTextureElement.Q<DropdownField>("loadlistTexture");
+        loadButtonHolderTextureElement = loadTextureElement.Q<VisualElement>("loadButtonTextureHolder");
+        _cancelLoadTextureButton = loadButtonHolderTextureElement.Q<Button>("cancelLoadTexture");
+        _rloadTexture = loadButtonHolderTextureElement.Q<Button>("rloadTexture");
+
+
+        //Noise element
+        _scaleInput = _scrollviewHolder.Q<TextField>("noiseScale");
+        _octavesInput = _scrollviewHolder.Q<TextField>("octaves");
+        _persistenceInput = _scrollviewHolder.Q<Slider>("persistance");
+        _lacunarityInput = _scrollviewHolder.Q<TextField>("lacunarity");
+        _seedInput = _scrollviewHolder.Q<TextField>("seed");
+        _heightMultiInput = _scrollviewHolder.Q<TextField>("heightMultiplier");
+        _useFallOff = _scrollviewHolder.Q<Toggle>("useFalloff");
+
+        _saveNoise = _scrollviewHolder.Q<Button>("saveNoise");
+        _loadNoise = _scrollviewHolder.Q<Button>("loadNoise");
+        _assetNoise = _scrollviewHolder.Q<Label>("assetNoise");
+
+        saveNoiseElement = _scrollviewHolder.Q<VisualElement>("saveNameNoise");
+        saveHolderNoiseElement = saveNoiseElement.Q<VisualElement>("saveNoiseHolder");
+        _saveNoiseNameInput = saveHolderNoiseElement.Q<TextField>("noiseSaveName");
+        saveButtonHolderNoiseElement = saveNoiseElement.Q<VisualElement>("saveButtonNoiseHolder");
+        _cancelNoiseButton = saveButtonHolderNoiseElement.Q<Button>("cancelNoise");
+        _rsaveNoise = saveButtonHolderNoiseElement.Q<Button>("rsaveNoise");
+
+        loadNoiseElement = _scrollviewHolder.Q<VisualElement>("loadNameNoise");
+        loadHolderNoiseElement = loadNoiseElement.Q<VisualElement>("loadNoiseHolder");
+        _loadNoiseNameInput = loadHolderNoiseElement.Q<DropdownField>("loadlistNoise");
+        loadButtonHolderNoiseElement = loadNoiseElement.Q<VisualElement>("loadButtonNoiseHolder");
+        _cancelLoadNoiseButton = loadButtonHolderNoiseElement.Q<Button>("cancelLoadNoise");
+        _rloadNoise = loadButtonHolderNoiseElement.Q<Button>("rloadNoise");
+
+        //Mesh Element
+        _lodInput = _scrollviewHolder.Q<SliderInt>("lod");
+        _chunkSizeInput = _scrollviewHolder.Q<SliderInt>("chunkSize");
+
+        //Hệ thống
+        _spinInput = _scrollviewHolder.Q<Slider>("spin");
+        _drawMode = _scrollviewHolder.Q<DropdownField>("mode");
+        _exitButton = rootElement.Q<Button>("exit");
+        _saveMeshButton = rootElement.Q<Button>("saveMesh");
+        _saveMeshpopupButton = rootElement.Q<Button>("saveMeshpopup");
+        _cancelMeshpopupButton = rootElement.Q<Button>("cancelMeshpopup");
+        _showLogButton = rootElement.Q<Button>("showlog");
+        _meshnameInput = rootElement.Q<TextField>("meshName");
+        _logLabel = rootElement.Q<Label>("log");
+        _logContainer = rootElement.Q<VisualElement>("logContainer");
+        _saveProgress = rootElement.Q<ProgressBar>("saveprogress");
+
+    }
     //khoi tao dropdown
     public void PopulateDropdown(string prefix, DropdownField dropdown)
     {
@@ -953,11 +892,7 @@ public class MenuController : MonoBehaviour
 
         dropdown.choices = fileNames.ToList();
     }
-    //valid gia tri
-    void Validate()
-    {
 
-    }
     //Khởi tạo giá trị ban đầu
     void generatedValue()
     {
@@ -967,7 +902,7 @@ public class MenuController : MonoBehaviour
         int maxLOD = (int)rangeAttribute.max;
         //Debug.Log(maxLOD);
         queryElement();
-        
+
 
         PopulateDropdown("noise", _loadNoiseNameInput);
         PopulateDropdown("texture", _loadTextureNameInput);
@@ -985,6 +920,82 @@ public class MenuController : MonoBehaviour
 
         SliderArraysStart();
     }
+    //Khi hoạt động
+    void OnEnable()
+    {
+        queryElement();
+
+        _scaleInput.RegisterValueChangedCallback(OnValuesChange);
+        _octavesInput.RegisterValueChangedCallback(OnValuesChange);
+        _persistenceInput.RegisterValueChangedCallback(OnFloatValuesChange);
+        _lacunarityInput.RegisterValueChangedCallback(OnValuesChange);
+        _seedInput.RegisterValueChangedCallback(OnValuesChange);
+        _heightMultiInput.RegisterValueChangedCallback(OnValuesChange);
+
+        _saveNoise.clickable.clicked += OnNoiseSaveButton;
+        _cancelNoiseButton.clickable.clicked += OnNoiseCancelButton;
+        _rsaveNoise.clickable.clicked += OnNoiseRSaveButton;
+
+        _loadNoise.clickable.clicked += OnNoiseLoadButton;
+        _cancelLoadNoiseButton.clickable.clicked += OnNoiseLoadCancelButton;
+        _rloadNoise.clickable.clicked += OnNoiseRLoadButton;
+
+        _lodInput.RegisterValueChangedCallback(OnIntValuesChange);
+        _chunkSizeInput.RegisterValueChangedCallback(OnIntValuesChange);
+        _useFallOff.RegisterValueChangedCallback(OnToggleValuesChange);
+        _spinInput.RegisterValueChangedCallback(OnFloatValuesChange);
+
+        //RegisterSliderArrayCallbacks(_sliderTintStr);
+
+        RegisterSliderArrayCallbacks(_sliderStartHeight);
+
+        //RegisterSliderArrayCallbacks(_sliderBlend);
+
+        //RegisterFieldArrayCallbacks(_textureStrInput);
+
+        RegisterToggleArrayCallbacks(_activeToggle);
+
+        RegisterButtonArrayCallbacks(_colorButton, _setColorButton);
+
+        _saveTexture.clickable.clicked += OnTextureSaveButton;
+        _cancelTextureButton.clickable.clicked += OnTextureCancelButton;
+        _rsaveTexture.clickable.clicked += OnTextureRSaveButton;
+
+        _loadTexture.clickable.clicked += OnTextureLoadButton;
+        _cancelLoadTextureButton.clickable.clicked += OnTextureLoadCancelButton;
+        _rloadTexture.clickable.clicked += OnTextureRLoadButton;
+
+        _drawMode.RegisterValueChangedCallback(OnValuesChange);
+        _exitButton.clickable.clicked += OnButtonClicked;
+        _saveMeshpopupButton.clickable.clicked += OnMeshPopup;
+        _cancelMeshpopupButton.clickable.clicked += OnCancelPopup;
+        _saveMeshButton.clickable.clicked += OnMeshSave;
+        _showLogButton.clickable.clicked += OnShowlog;
+    }
+    private void OnDisable()
+    {
+        _saveNoise.clickable.clicked -= OnNoiseSaveButton;
+        _cancelNoiseButton.clickable.clicked -= OnNoiseCancelButton;
+        _rsaveNoise.clickable.clicked -= OnNoiseRSaveButton;
+
+        _loadNoise.clickable.clicked -= OnNoiseLoadButton;
+        _cancelLoadNoiseButton.clickable.clicked -= OnNoiseLoadCancelButton;
+        _rloadNoise.clickable.clicked -= OnNoiseRLoadButton;
+
+        _saveTexture.clickable.clicked -= OnTextureSaveButton;
+        _cancelTextureButton.clickable.clicked -= OnTextureCancelButton;
+        _rsaveTexture.clickable.clicked -= OnTextureRSaveButton;
+
+        _loadTexture.clickable.clicked -= OnTextureLoadButton;
+        _cancelLoadTextureButton.clickable.clicked -= OnTextureLoadCancelButton;
+        _rloadTexture.clickable.clicked -= OnTextureRLoadButton;
+
+        _exitButton.clickable.clicked -= OnButtonClicked;
+        _saveMeshpopupButton.clickable.clicked -= OnMeshPopup;
+        _cancelMeshpopupButton.clickable.clicked -= OnCancelPopup;
+        _saveMeshButton.clickable.clicked -= OnMeshSave;
+        _showLogButton.clickable.clicked -= OnShowlog;
+    }
     void Start()
     {
         generatedValue();
@@ -992,5 +1003,55 @@ public class MenuController : MonoBehaviour
         mapGen.DrawMapInRuntime(getMode());
     }
 
+    //chuan hoa text
+    private string RemoveSpacesAndSpecialCharacters(string input)
+    {
+        // Remove spaces and special characters using regular expressions
+        string processedText = System.Text.RegularExpressions.Regex.Replace(input, "[^a-zA-Z0-9]", "");
+        return processedText;
+    }
 
+    private string GenerateRandomString(int length)
+    {
+        const string characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        string randomString = "";
+
+        for (int i = 0; i < length; i++)
+        {
+            int randomIndex = UnityEngine.Random.Range(0, characters.Length);
+            randomString += characters[randomIndex];
+        }
+
+        return randomString;
+    }
+    //---
+
+    //Hiển thị các thông số cần
+    void showSettings()
+    {
+        if (_drawMode.value == "Noise" || _drawMode.value == "Raw Noise")
+        {
+            for (int i = 0; i < 7; i++)
+            {
+                subElement[i].style.display = DisplayStyle.None;
+            }
+            _spinInput.style.display = DisplayStyle.None;
+            _lodInput.style.display = DisplayStyle.None;
+            _textureTitle.style.display = DisplayStyle.None;
+            _saveMeshpopupButton.style.display = DisplayStyle.None;
+        }
+        if (_drawMode.value == "Mesh")
+        {
+            for (int i = 0; i < 7; i++)
+            {
+                subElement[i].style.display = DisplayStyle.Flex;
+            }
+            _spinInput.style.display = DisplayStyle.Flex;
+            _lodInput.style.display = DisplayStyle.Flex;
+            _textureTitle.style.display = DisplayStyle.Flex;
+            _saveMeshpopupButton.style.display = DisplayStyle.Flex;
+        }
+    }
+
+    //---
 }

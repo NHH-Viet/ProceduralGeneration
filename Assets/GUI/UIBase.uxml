@@ -166,13 +166,14 @@
             <ui:TextField picking-mode="Ignore" value="filler text" text="filler text" name="meshName" style="flex-shrink: 1; flex-grow: 1; height: auto; width: 50%; display: none;" />
             <ui:Button text="Lưu" display-tooltip-when-elided="true" name="saveMesh" style="width: 10%; display: none;" />
             <ui:Button text="Hủy" display-tooltip-when-elided="true" name="cancelMeshpopup" style="display: none;" />
-            <ui:Button text="Log" display-tooltip-when-elided="true" name="showlog" style="width: 10%;" />
+            <ui:Button text="Log" display-tooltip-when-elided="true" name="showlog" style="width: 10%; display: flex;" />
             <ui:Button text="Thoát" display-tooltip-when-elided="true" name="exit" start-visible="true" style="width: 15%;" />
         </ui:VisualElement>
     </ui:VisualElement>
-    <ui:VisualElement name="logContainer" style="position: absolute; right: auto; height: 200px; width: 600px; top: 70%; left: 580px; background-color: rgb(0, 0, 0); opacity: 0.5; display: none;">
+    <ui:VisualElement name="logContainer" style="position: absolute; right: auto; height: 200px; width: 500px; top: 70%; left: 680px; background-color: rgb(0, 0, 0); opacity: 0.5; display: none;">
         <ui:ScrollView name="logview" horizontal-scroller-visibility="Auto" vertical-scroller-visibility="Auto" style="height: 90%; flex-shrink: 0; flex-grow: 1; flex-direction: column;">
             <ui:Label display-tooltip-when-elided="true" name="log" enable-rich-text="false" style="font-size: 14px; height: auto; -unity-text-align: lower-left; white-space: nowrap; color: rgb(255, 255, 255); flex-grow: 1; width: auto; flex-shrink: 1; flex-direction: column; overflow: hidden;" />
         </ui:ScrollView>
     </ui:VisualElement>
+    <ui:ProgressBar value="0" title="Đang lưu" name="saveprogress" style="flex-shrink: 1; flex-grow: 1; background-color: rgb(34, 195, 28); position: absolute; top: 400px; left: 500px; width: 200px; height: auto; display: none; border-top-left-radius: 0; border-bottom-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0;" />
 </ui:UXML>

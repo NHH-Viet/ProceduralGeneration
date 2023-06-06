@@ -19,7 +19,7 @@ public static class TextureDataSerializer
             }
 
             Debug.Log("TextureData saved successfully at path: " + filePath);
-            label.text = label.text + "\nDữ liệu lưu thành công tại: " + filePath;
+            label.text = label.text + "\nLưu thành công tại đường dẫn:\n " + filePath;
         }
         catch (IOException ex)
         {

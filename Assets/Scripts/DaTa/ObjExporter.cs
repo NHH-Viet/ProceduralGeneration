@@ -109,4 +109,52 @@ public class ObjExporter
         }
     }
 
+    public static async Task iSaveMeshAsync(Mesh mesh, string filePath, CancellationToken cancellationToken)
+    {
+        StringBuilder objData = new StringBuilder(mesh.vertices.Length * 100);
+        objData.Append("g ExportedMesh\n");
+
+        const int batchSize = 1000; // Adjust the batch size as per your requirements
+
+        for (int batchStart = 0; batchStart < mesh.vertices.Length; batchStart += batchSize)
+        {
+            int batchEnd = Mathf.Min(batchStart + batchSize, mesh.vertices.Length);
+
+            for (int i = batchStart; i < batchEnd; i++)
+            {
+                // Check for cancellation request
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    // Clean up any resources and throw an OperationCanceledException
+                    // or return early, depending on your requirements
+                    //CleanupResources();
+                    cancellationToken.ThrowIfCancellationRequested();
+                }
+
+                // Process vertices and append to objData StringBuilder
+                objData.Append("v ").Append(mesh.vertices[i].x).Append(" ").Append(mesh.vertices[i].y).Append(" ").Append(mesh.vertices[i].z).Append("\n");
+                objData.Append("vn ").Append(mesh.normals[i].x).Append(" ").Append(mesh.normals[i].y).Append(" ").Append(mesh.normals[i].z).Append("\n");
+                objData.Append("vt ").Append(mesh.uv[i].x).Append(" ").Append(mesh.uv[i].y).Append("\n");
+
+                float progress = (float)(i + 1) / mesh.vertices.Length;
+                OnProgress?.Invoke(progress); // Report progress
+                await Task.Yield(); // Allow other tasks to execute
+            }
+
+            // Append the processed batch to the file
+            await AppendTextToFileAsync(filePath, objData.ToString());
+
+            // Clear the StringBuilder for the next batch
+            objData.Clear();
+        }
+    }
+
+    private static async Task AppendTextToFileAsync(string filePath, string text)
+    {
+        using (StreamWriter writer = new StreamWriter(filePath, true)) // Open the file in append mode
+        {
+            await writer.WriteAsync(text);
+        }
+    }
+
 }

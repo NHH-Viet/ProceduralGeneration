@@ -175,5 +175,5 @@
             <ui:Label display-tooltip-when-elided="true" name="log" enable-rich-text="false" style="font-size: 14px; height: auto; -unity-text-align: lower-left; white-space: nowrap; color: rgb(255, 255, 255); flex-grow: 1; width: auto; flex-shrink: 1; flex-direction: column; overflow: hidden;" />
         </ui:ScrollView>
     </ui:VisualElement>
-    <ui:ProgressBar value="0" title="Đang lưu" name="saveprogress" style="flex-shrink: 1; flex-grow: 1; background-color: rgb(34, 195, 28); position: absolute; top: 400px; left: 500px; width: 200px; height: auto; display: none; border-top-left-radius: 0; border-bottom-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0;" />
+    <ui:ProgressBar value="0" title="Đang lưu" name="saveprogress" style="flex-shrink: 1; flex-grow: 1; background-color: rgb(34, 195, 28); position: absolute; top: 500px; left: 450px; width: 200px; height: auto; display: none; border-top-left-radius: 0; border-bottom-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0;" />
 </ui:UXML>

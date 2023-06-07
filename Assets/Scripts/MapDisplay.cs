@@ -113,6 +113,8 @@ public class MapDisplay : MonoBehaviour
         }
         else if (mode == "Raw Noise")
         {
+            textureRender.gameObject.SetActive(true);
+            meshFilter.gameObject.SetActive(false);
             DrawTextureMap(TextureGenerator.TextureFromHeightMap(new HeightMap(noiseMap, 0, 1)));
         }
         else

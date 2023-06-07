@@ -253,6 +253,17 @@ public class MenuController : MonoBehaviour
             {
                 Mesh mesh = targetMeshFilter.sharedMesh;
                 string filePath = Path.Combine(Application.persistentDataPath, text + "mesh.obj"); // Define the file path for the exported mesh
+
+                if (File.Exists(filePath))
+                {
+                    Debug.LogError("File already exists: " + filePath);
+                    // Show an error message to the user
+                    // You can update the UI or display a popup to inform the user about the existing file
+                    _logLabel.text = _logLabel.text + "\n Lỗi: File đã tồn tại";
+                    _saveMeshButton.SetEnabled(true);
+                    return; // Don't proceed with the export
+                }
+
                 mapGen = GameObject.FindGameObjectWithTag("MapDisplay").GetComponent<MapDisplay>();
 
                 // Create a copy of the texture to be exported
@@ -355,6 +366,7 @@ public class MenuController : MonoBehaviour
             ObjExporter.OnProgress -= ExportProgressHandler; // Unsubscribe from the progress event
             _saveProgress.style.display = DisplayStyle.None;
             _saveProgress.value = 0f;
+            lastProgressUpdate = 0f;
         }
 
     }
@@ -364,11 +376,10 @@ public class MenuController : MonoBehaviour
     {
         // Update your user interface with the progress value (e.g., progress bar)
         float scaleProgress = progress * 100f;
-        string formattedValue = scaleProgress.ToString("F2");
         if (progress - lastProgressUpdate >= ProgressUpdateInterval)
         {
             lastProgressUpdate = progress;
-
+            Debug.Log("Progress is" + progress);
             // Update your UI elements with the progress value here
             // This could be updating a progress bar, text display, or any other UI element
             _saveProgress.value = (float)Math.Round(progress * 100, 2);

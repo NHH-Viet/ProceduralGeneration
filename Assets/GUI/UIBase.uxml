@@ -7,7 +7,7 @@
             </ui:VisualElement>
             <ui:ScrollView name="ScrollViewmain" style="height: 986px; flex-grow: 1;">
                 <ui:VisualElement style="flex-grow: 1; height: 230%; align-items: center;">
-                    <ui:DropdownField label="Hiển thị" index="0" choices="Noise,Raw Noise,Mesh" name="mode" style="flex-shrink: 1; flex-grow: 1; height: 100%; font-size: 14px; -unity-font-style: bold; -unity-text-align: middle-left;" />
+                    <ui:DropdownField label="Hiển thị" index="0" choices="Noise,Raw Noise,Mesh,Color Map" name="mode" style="flex-shrink: 1; flex-grow: 1; height: 100%; font-size: 14px; -unity-font-style: bold; -unity-text-align: middle-left;" />
                 </ui:VisualElement>
                 <ui:VisualElement style="flex-grow: 1; height: 100%; align-items: center; width: 100%; flex-direction: row; -unity-text-align: middle-left; justify-content: center; margin-top: 10px; margin-bottom: 10px;">
                     <ui:Label text="Thông số Noise:" display-tooltip-when-elided="true" style="flex-shrink: 1; flex-grow: 0; align-items: center; justify-content: center; height: 100%; font-size: 14px; -unity-font-style: bold; width: 30%; margin-right: 15px;" />
@@ -16,7 +16,7 @@
                 </ui:VisualElement>
                 <ui:VisualElement name="saveNameNoise" style="flex-grow: 1; height: 400%; flex-direction: column; align-items: center; display: none;">
                     <ui:VisualElement name="saveNoiseHolder" style="flex-grow: 1; flex-direction: row; margin-bottom: 5px;">
-                        <ui:TextField picking-mode="Ignore" label="Tên file" name="noiseSaveName" style="flex-shrink: 1; flex-grow: 1; height: 100%; align-items: center;" />
+                        <ui:TextField picking-mode="Ignore" label="Tên file" name="noiseSaveName" max-length="200" style="flex-shrink: 1; flex-grow: 1; height: 100%; align-items: center;" />
                     </ui:VisualElement>
                     <ui:VisualElement name="saveButtonNoiseHolder" style="flex-direction: row; flex-grow: 1;">
                         <ui:Button text="Lưu" display-tooltip-when-elided="true" name="rsaveNoise" style="flex-shrink: 1; height: 50%;" />
@@ -33,10 +33,10 @@
                     </ui:VisualElement>
                 </ui:VisualElement>
                 <ui:TextField picking-mode="Ignore" label="Tỉ lệ" value="5" text="5" name="noiseScale" max-length="4" class="options" style="flex-shrink: 1; flex-grow: 1; flex-wrap: nowrap; align-items: center; height: 200%; margin-bottom: 10px; margin-top: 10px; opacity: 0.9; font-size: 14px; -unity-font-style: bold;" />
-                <ui:TextField picking-mode="Ignore" label="Octaves" value="filler text" text="6" name="octaves" password="false" max-length="2" class="options" style="flex-shrink: 1; flex-grow: 1; flex-wrap: nowrap; align-items: center; height: 200%; opacity: 0.9;" />
+                <ui:TextField picking-mode="Ignore" label="Octaves" value="6" text="6" name="octaves" password="false" max-length="2" class="options" style="flex-shrink: 1; flex-grow: 1; flex-wrap: nowrap; align-items: center; height: 200%; opacity: 0.9;" />
                 <ui:Slider picking-mode="Ignore" label="Persistence" value="0.5" high-value="1" show-input-field="true" direction="Horizontal" inverted="false" name="persistance" class="options" style="flex-shrink: 1; flex-grow: 1; -unity-text-align: upper-left; height: auto; padding-left: 0; padding-right: 10px; opacity: 0.9; margin-right: 0;" />
                 <ui:TextField picking-mode="Ignore" label="Lacunarity" value="filler text" text="6" name="lacunarity" password="false" max-length="1" class="options" style="flex-shrink: 1; flex-grow: 1; flex-wrap: nowrap; align-items: center; height: 200%; opacity: 0.9;" />
-                <ui:TextField picking-mode="Ignore" label="Seed" value="filler text" text="6" name="seed" password="false" class="options" style="flex-shrink: 1; flex-grow: 1; flex-wrap: nowrap; align-items: center; height: 200%; opacity: 0.9;" />
+                <ui:TextField picking-mode="Ignore" label="Seed" value="filler text" text="6" name="seed" password="false" max-length="6" class="options" style="flex-shrink: 1; flex-grow: 1; flex-wrap: nowrap; align-items: center; height: 200%; opacity: 0.9;" />
                 <ui:TextField picking-mode="Ignore" label="Cao độ" value="filler text" text="6" name="heightMultiplier" password="false" max-length="4" class="options" style="flex-shrink: 1; flex-grow: 1; flex-wrap: nowrap; align-items: center; height: 200%; opacity: 0.9;" />
                 <ui:Toggle label="Dùng Fall Off" name="useFalloff" value="false" class="options" style="height: 150%; flex-shrink: 1; flex-grow: 1; align-items: center; opacity: 0.9; margin-top: 0; margin-bottom: 25px;" />
                 <ui:VisualElement style="flex-grow: 1; height: 100%; align-items: center; margin-top: 10px; margin-bottom: 10px;">
@@ -52,7 +52,7 @@
                 </ui:VisualElement>
                 <ui:VisualElement name="saveNameTexture" style="flex-grow: 1; height: 400%; flex-direction: column; align-items: center; display: none;">
                     <ui:VisualElement name="saveTextureHolder" style="flex-direction: row; flex-grow: 1; margin-bottom: 10px;">
-                        <ui:TextField picking-mode="Ignore" label="Tên file" name="textureSaveName" style="flex-shrink: 1; flex-grow: 1; height: 100%; align-items: center;" />
+                        <ui:TextField picking-mode="Ignore" label="Tên file" name="textureSaveName" max-length="200" style="flex-shrink: 1; flex-grow: 1; height: 110%; align-items: center;" />
                     </ui:VisualElement>
                     <ui:VisualElement name="saveButtonTextureHolder" style="flex-direction: row; flex-grow: 1;">
                         <ui:Button text="Lưu" display-tooltip-when-elided="true" name="rsaveTexture" style="flex-shrink: 1; height: 50%;" />
@@ -163,7 +163,7 @@
         </ui:VisualElement>
         <ui:VisualElement name="VisualElement" style="height: 10%; margin-left: 10px; margin-top: 10px; align-items: center; flex-direction: row; justify-content: flex-start; flex-grow: 0; width: 120%; flex-shrink: 0;">
             <ui:Button text="Lưu Mesh" display-tooltip-when-elided="true" name="saveMeshpopup" style="width: 20%;" />
-            <ui:TextField picking-mode="Ignore" value="filler text" text="filler text" name="meshName" style="flex-shrink: 1; flex-grow: 1; height: auto; width: 50%; display: none;" />
+            <ui:TextField picking-mode="Ignore" name="meshName" max-length="200" style="flex-shrink: 1; flex-grow: 1; height: auto; width: 50%; display: none;" />
             <ui:Button text="Lưu" display-tooltip-when-elided="true" name="saveMesh" style="width: 10%; display: none;" />
             <ui:Button text="Hủy" display-tooltip-when-elided="true" name="cancelMeshpopup" style="display: none;" />
             <ui:Button text="Log" display-tooltip-when-elided="true" name="showlog" style="width: 10%; display: flex;" />

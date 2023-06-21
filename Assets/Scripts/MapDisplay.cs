@@ -117,6 +117,12 @@ public class MapDisplay : MonoBehaviour
             meshFilter.gameObject.SetActive(false);
             DrawTextureMap(TextureGenerator.TextureFromHeightMap(new HeightMap(noiseMap, 0, 1)));
         }
+        else if (mode == "Color Map")
+        {
+            textureRender.gameObject.SetActive(true);
+            meshFilter.gameObject.SetActive(false);
+            DrawTextureMap(texturesave);
+        }
         else
         {
             textureRender.gameObject.SetActive(false);

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 using System.Threading;
+
 using System.Collections;
 
 public class MenuController : MonoBehaviour
@@ -17,6 +18,7 @@ public class MenuController : MonoBehaviour
     public TextureData textureSettings;
     public GameObject meshGameObject;
     public Material meshMaterial;
+    [SerializeField] public GameObject canvasButton;
 
     MeshRenderer meshRenderer;
     MapDisplay mapGen;
@@ -243,10 +245,15 @@ public class MenuController : MonoBehaviour
                 // Generate a random three-character string
                 text = GenerateRandomString(3);
             }
-            else
+            // Remove spaces and special characters
+            text = RemoveSpacesAndSpecialCharacters(text);
+            // Remove spaces and special characters
+            text = RemoveSpacesAndSpecialCharacters(text);
+            bool isReserved = IsReservedName(text);
+            if (isReserved)
             {
-                // Remove spaces and special characters
-                text = RemoveSpacesAndSpecialCharacters(text);
+                _logLabel.text = _logLabel.text + "\nThe entered file name is a reserved name. Please choose a different name.";
+                return;
             }
 
             if (targetMeshFilter != null && targetMeshFilter.sharedMesh != null)
@@ -438,10 +445,15 @@ public class MenuController : MonoBehaviour
             // Generate a random three-character string
             text = GenerateRandomString(3);
         }
-        else
+
+        // Remove spaces and special characters
+        text = RemoveSpacesAndSpecialCharacters(text);
+        text = RemoveSpacesAndSpecialCharacters(text);
+        bool isReserved = IsReservedName(text);
+        if (isReserved)
         {
-            // Remove spaces and special characters
-            text = RemoveSpacesAndSpecialCharacters(text);
+            _logLabel.text = _logLabel.text + "\nThe entered file name is a reserved name. Please choose a different name.";
+            return;
         }
         // Modify the values of the new instance as needed
 
@@ -584,18 +596,23 @@ public class MenuController : MonoBehaviour
             // Generate a random three-character string
             text = GenerateRandomString(3);
         }
+
+        // Remove spaces and special characters
+        text = RemoveSpacesAndSpecialCharacters(text);
+        bool isReserved = IsReservedName(text);
+
+        if (isReserved)
+        {
+            _logLabel.text = _logLabel.text + "\nThe entered file name is a reserved name. Please choose a different name.";
+        }
         else
         {
-            // Remove spaces and special characters
-            text = RemoveSpacesAndSpecialCharacters(text);
+            // Save the modified asset as a binary file
+            string filePath = Application.persistentDataPath + "/" + text + "texture" + ".dat";
+            TextureDataSerializer.SaveTextureData(textureSettings, filePath, _logLabel);
+            PopulateDropdown("texture", _loadTextureNameInput);
+            saveTextureElement.style.display = DisplayStyle.None;
         }
-        // Modify the values of the new instance as needed
-
-        // Save the modified asset as a binary file
-        string filePath = Application.persistentDataPath + "/" + text + "texture" + ".dat";
-        TextureDataSerializer.SaveTextureData(textureSettings, filePath, _logLabel);
-        PopulateDropdown("texture", _loadTextureNameInput);
-        saveTextureElement.style.display = DisplayStyle.None;
     }
     void OnTextureLoadButton()
     {
@@ -689,7 +706,7 @@ public class MenuController : MonoBehaviour
             if (!success)
                 heightMapSettings.noiseSettings.scale = 1;
         }
-        if (evt.target == _octavesInput)
+        /*if (evt.target == _octavesInput)
         {
             bool success = int.TryParse(_octavesInput.value, out heightMapSettings.noiseSettings.octaves);
             //heightMapSettings.noiseSettings.octaves = int.Parse(_octavesInput.value);
@@ -703,6 +720,24 @@ public class MenuController : MonoBehaviour
                 _octavesInput.value = heightMapSettings.noiseSettings.octaves.ToString();
             }
 
+        }*/
+        if (evt.target == _octavesInput)
+        {
+            if (int.TryParse(_octavesInput.value, out int octavesValue) && octavesValue >= 0)
+            {
+                if (octavesValue > 20)
+                {
+                    octavesValue = 20;
+                    _octavesInput.value = octavesValue.ToString();
+                }
+
+                heightMapSettings.noiseSettings.octaves = octavesValue;
+            }
+            else
+            {
+                // If the value is negative or parsing fails, set octaves to 1
+                heightMapSettings.noiseSettings.octaves = 1;
+            }
         }
         if (evt.target == _lacunarityInput)
         {
@@ -1022,6 +1057,25 @@ public class MenuController : MonoBehaviour
         return processedText;
     }
 
+    private bool IsReservedName(string fileName)
+    {
+        string[] reservedNames = GetReservedNames(); // Custom list of reserved names
+
+        return reservedNames.Any(name => string.Equals(name, fileName, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private string[] GetReservedNames()
+    {
+        // Add the reserved names specific to your target operating system
+        // This example includes some reserved names in Windows
+        return new string[]
+        {
+            "CON", "PRN", "AUX", "NUL",
+            "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
+            "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"
+        };
+    }
+
     private string GenerateRandomString(int length)
     {
         const string characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -1050,6 +1104,7 @@ public class MenuController : MonoBehaviour
             _lodInput.style.display = DisplayStyle.None;
             _textureTitle.style.display = DisplayStyle.None;
             _saveMeshpopupButton.style.display = DisplayStyle.None;
+            canvasButton.gameObject.SetActive(false);
         }
         if (_drawMode.value == "Mesh")
         {
@@ -1061,6 +1116,19 @@ public class MenuController : MonoBehaviour
             _lodInput.style.display = DisplayStyle.Flex;
             _textureTitle.style.display = DisplayStyle.Flex;
             _saveMeshpopupButton.style.display = DisplayStyle.Flex;
+            canvasButton.gameObject.SetActive(true);
+        }
+        if (_drawMode.value == "Color Map")
+        {
+            for (int i = 0; i < 7; i++)
+            {
+                subElement[i].style.display = DisplayStyle.Flex;
+            }
+            _spinInput.style.display = DisplayStyle.None;
+            _lodInput.style.display = DisplayStyle.None;
+            _textureTitle.style.display = DisplayStyle.Flex;
+            _saveMeshpopupButton.style.display = DisplayStyle.None;
+            canvasButton.gameObject.SetActive(false);
         }
     }
 
